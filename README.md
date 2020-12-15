@@ -32,6 +32,7 @@ FOR EXTRA CREDIT
     - For possible combinations of *hyper-parameter settings*.
         (reference: https://towardsdatascience.com/understanding-hyperparameters-and-its-optimisation-techniques-f0debba07568)
         * Grid Search
+            https://jakevdp.github.io/PythonDataScienceHandbook/05.03-hyperparameters-and-model-validation.html
         * Random Search
         * Bayesian Optimisation
 •Code + Report to be submitted.
