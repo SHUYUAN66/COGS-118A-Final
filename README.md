@@ -6,6 +6,87 @@ replicate  a part of the analysis done in the paper by Caruana & Niculescu-Mizil
 
 •3 datasets, 3 algorithms, 3 experiment trials
     From CNM06, pick 3 of the datasets (available from UCI machine learning repository) and pick 3 of the algorithms (different kernels of SVM are not 2 different classifiers, pick truly differentones). For each classifier and dataset combo, you will need to do 3 trials (CNM06 does 5; we will make it easier for you). That’s 3x3x3 = 27 total trials.
+### Dataset Information
+
+1. ADULT
+    * Data Set Characteristics: [Multivariables]
+    * Associated Tasks: [Classification]
+    * TARGET: >50K, <=50K.
+    * COLUMNS/ Variables: ['age','workclass','fnlwgt','education','education-num','marital-status','occupation','relationship','race','sex','capital-gain','capital-loss','hours-per-week','native-country']
+        - age: continuous.
+        - workclass: Private, Self-emp-not-inc, Self-emp-inc, Federal-gov, Local-gov, State-gov, Without-pay, Never-worked.
+        - fnlwgt: continuous.
+        - education: Bachelors, Some-college, 11th, HS-grad, Prof-school, Assoc-acdm, Assoc-voc, 9th, 7th-8th, 12th, Masters, 1st-4th, 10th, Doctorate, 5th-6th, Preschool.
+        - education-num: continuous.
+        - marital-status: Married-civ-spouse, Divorced, Never-married, Separated, Widowed, Married-spouse-absent, Married-AF-spouse.
+        - occupation: Tech-support, Craft-repair, Other-service, Sales, Exec-managerial, Prof-specialty, Handlers-cleaners, Machine-op-inspct, Adm-clerical, Farming-fishing, Transport-moving, Priv-house-serv, Protective-serv, Armed-Forces.
+        - relationship: Wife, Own-child, Husband, Not-in-family, Other-relative, Unmarried.
+        - race: White, Asian-Pac-Islander, Amer-Indian-Eskimo, Other, Black.
+        - sex: Female, Male.
+        - capital-gain: continuous.
+        - capital-loss: continuous.
+        - hours-per-week: continuous.
+        - native-country: United-States, Cambodia, England, Puerto-Rico, Canada, Germany, Outlying-US(Guam-USVI-etc), India, Japan, Greece, South, China, Cuba, Iran, Honduras, Philippines, Italy, Poland, Jamaica, Vietnam, Mexico, Portugal, Ireland, France, Dominican-Republic, Laos, Ecuador, Taiwan, Haiti, Columbia, Hungary, Guatemala, Nicaragua, Scotland, Thailand, Yugoslavia, El-Salvador, Trinadad&Tobago, Peru, Hong, Holand-Netherlands.
+
+2. AVILA
+    * Data Set Characteristics: [Multivariables]
+    * Associated Tasks: [Classification]
+    * TARGET: {Class: A, B, C, D, E, F, G, H, I, W, X, Y}
+    * VARIABLES/ ATTRIBUTES: A LIST OF STRING: 
+            - F1: intercolumnar distance
+            - F2: upper margin
+            - F3: lower margin
+            - F4: exploitation
+            - F5: row number
+            - F6: modular ratio
+            - F7: interlinear spacing
+            - F8: weight
+            - F9: peak number
+            - F10: modular ratio/ interlinear spacing
+
+3. NURSERY 
+    * Data Set Characteristics: [Multivariables]
+    * Associated Tasks: [Classification]
+    * Theme: NURSERY Evaluation of applications for nursery schools
+    * TARGET: NURSERY
+    * ATTRIBUTES :[EMPLOY, STRUCT_FINAN, STRUCTURE, SOC_HEALTH]
+            => [parents, has_nurs, form, children, housing,finance, social, health]
+    
+        1. EMPLOY Employment of parents and child's nursery
+            - parents Parents' occupation : usual, pretentious, great_pret
+            - has_nurs Child's nursery: proper, less_proper, improper, critical, very_crit
+        2. STRUCT_FINAN Family structure and financial standings
+            - STRUCTURE Family structure
+                - form Form of the family: complete, completed, incomplete, foster
+                - children Number of children: 1, 2, 3, more
+            - housing Housing conditions: convenient, less_conv, critical
+            - finance Financial standing of the family : convenient, inconv
+        3. SOC_HEALTH Social and health picture of the family
+            - social Social conditions: non-prob, slightly_prob, problematic
+            - health Health conditions: recommended, priority, not_recom
+
+4. Individual household electric power consumption Data Set [EXTRA_CREDIT!!]
+    * GOAL: Predict the future trand of individual household electric power consumprion.
+    * TARGET: voltage: minute-averaged voltage (in volt)
+    * Theme: Measurements of electric power consumption in one household with a one-minute sampling rate over a period of almost 4 years.
+    * Data Set Characteristics:[Time series; Multivariables]
+    * TASK: [Regression, Clustering]
+    * Notes:
+        1.(global_active_power*1000/60 - sub_metering_1 - sub_metering_2 - sub_metering_3) represents the active energy consumed every minute (in watt hour) in the household by electrical equipment not measured in sub-meterings 1, 2 and 3.
+        2.The dataset contains some missing values in the measurements (nearly 1,25% of the rows). All calendar timestamps are present in the dataset but for some timestamps, the measurement values are missing: a missing value is represented by the absence of value between two consecutive semi-colon attribute separators. For instance, the dataset shows missing values on April 28, 2007.
+    * ATTRIBUTES: 
+        1.date: Date in format dd/mm/yyyy
+        2.time: time in format hh:mm:ss
+        3.global_active_power: household global minute-averaged active power (in kilowatt)
+        4.global_reactive_power: household global minute-averaged reactive power (in kilowatt)
+        5.global_intensity: household global minute-averaged current intensity (in ampere)
+        6.sub_metering_1: energy sub-metering No. 1 (in watt-hour of active energy). 
+            It corresponds to the kitchen, containing mainly a dishwasher, an oven and a microwave (hot plates are not electric but gas powered).
+        7.sub_metering_2: energy sub-metering No. 2 (in watt-hour of active energy). 
+            It corresponds to the laundry room, containing a washing-machine, a tumble-drier, a refrigerator and a light.
+        8.sub_metering_3: energy sub-metering No. 3 (in watt-hour of active energy). 
+            It corresponds to an electric water-heater and an air-conditioner
+
 
 ## Algorithms
 
@@ -40,6 +121,7 @@ with satisfactory accuracy levels in several application domains.
 •Code + Report to be submitted.
 
 ### Hyperparameters:
+
 1. *KNN*: we use 26 values of K ranging fromK= 1 to K=|trainset|. We useKNN with Euclidean distance and Euclideand distance weighted by gain ratio.We also use distance weighted KNN,and locally weighted averaging.The kernel widths for locally weighted averaging vary from 20 to 210 times the minimum distance between any two points in the trainset.
 2. *Decisiontrees(DT)*: we varythesplittingcrite-rion,pruningoptions,andsmoothing(LaplacianorBayesiansmoothing).We useallof thetreemodelsin Buntine'sINDpackage(Buntine& Caruana,1991):BAYES,ID3,CART, CART0,C4,MML,andSMML.We alsogeneratetreesof type C44LS(C4withnopruningandLaplaciansmoothing),C44BS(C44withBayesiansmoothing),andMMLLS(MMLwithLapla-ciansmoothing).See(Provost& Domingos,2003)fora descriptionof C44LS
 3. *SVMs*:we  usethefollowingkernelsinSVMLight(Joachims,1999):linear,polynomialdegree2 & 3, radial with width {0.001,0.005,0.01,0.05,0.1,0.5,1,2}. We also vary the regularization parameter by factors of ten from 107 to 103 with each kernel.
@@ -47,6 +129,8 @@ with satisfactory accuracy levels in several application domains.
 ## Results:
 
 - scoring(defult = AUC) [F1, AUC]
+
+    - ['accuracy', 'adjusted_mutual_info_score', 'adjusted_rand_score', 'average_precision', 'balanced_accuracy', 'completeness_score', 'explained_variance', 'f1', 'f1_macro', 'f1_micro', 'f1_samples', 'f1_weighted', 'fowlkes_mallows_score', 'homogeneity_score', 'jaccard', 'jaccard_macro', 'jaccard_micro', 'jaccard_samples', 'jaccard_weighted', 'max_error', 'mutual_info_score', 'neg_brier_score', 'neg_log_loss', 'neg_mean_absolute_error', 'neg_mean_gamma_deviance', 'neg_mean_poisson_deviance', 'neg_mean_squared_error', 'neg_mean_squared_log_error', 'neg_median_absolute_error', 'neg_root_mean_squared_error', 'normalized_mutual_info_score', 'precision', 'precision_macro', 'precision_micro', 'precision_samples', 'precision_weighted', 'r2', 'recall', 'recall_macro', 'recall_micro', 'recall_samples', 'recall_weighted', 'roc_auc', 'roc_auc_ovo', 'roc_auc_ovo_weighted', 'roc_auc_ovr', 'roc_auc_ovr_weighted', 'v_measure_score']
 
 - First Result (2 tables)
     1. a table of mean (across 3 trials) test set performance for each algorithm/dataset combo​1​.
