@@ -1,8 +1,12 @@
 import os
+from sklearn import preprocessing
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import auc, make_scorer, roc_auc_score, roc_curve
 from sklearn.pipeline import Pipeline
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import GridSearchCV
 import joblib
+
 def check_directory(lst):
     for i in lst:
         CHECK_FOLDER = os.path.isdir(i)
@@ -17,6 +21,7 @@ def save_trails(pre_params_, preprocessor_, alg, scr, data, path=['all_models/',
     data: a dict() of dataset {'dataname':[trainset, testset]}
     path = ['all_models','best_models'] , to decide first chart or second chart.
     """
+    
     # parameters
     params = pre_params_
     alg_name = list(alg)[0]
@@ -24,13 +29,15 @@ def save_trails(pre_params_, preprocessor_, alg, scr, data, path=['all_models/',
     clsf = alg[alg_name][0]
     param = alg[alg_name][1]
     params.append(param)
-    print(params)
     dataset = data[data_name][0]
     pipeline = Pipeline([
         ('preprocessing', preprocessor_),
         ('classifier', clsf)])
-    X = dataset.drop(columns=['target'])
+    #  ROC AUC requires the predicted class probabilities (yhat_probs)
+    X = dataset.drop(columns=['target']) 
     y = dataset.target
+    lb = preprocessing.LabelBinarizer()
+    #y = lb.fit_transform(y)
     record={}
     for i in range(len(list(scr))):  
         score_name = list(scr)[i]
@@ -41,15 +48,15 @@ def save_trails(pre_params_, preprocessor_, alg, scr, data, path=['all_models/',
         details = {}
         # 4000 : 1000
         X_train, X_val, y_train, y_val=train_test_split(X, y, test_size=0.4)
-        clf = GridSearchCV(pipeline, params, scoring=score, cv=5, n_jobs=-1, return_train_score=True)
-        clf.fit(X_train, y_train)
+        clf = GridSearchCV(pipeline, params, scoring=score,
+                           cv=5, n_jobs=-1, return_train_score=True)
         # For each trialwe use 4000 cases to train thedi erent models,1000 casesto calibrate the models and select the best parameters,and then report performance on the large final test set.
+        clf.fit(X_train, y_train)
         save_models = os.path.join(path[0],alg_name, data_name, score_name)
         check_directory([save_models])
         joblib.dump(clf, os.path.join(
             save_models, 'all_models.pkl'))
         results = clf.cv_results_
-        print(results)
         mean_train_grade = clf.cv_results_['mean_test_score']
         best_score = clf.best_score_
         best_params = clf.best_params_
@@ -64,7 +71,7 @@ def save_trails(pre_params_, preprocessor_, alg, scr, data, path=['all_models/',
         joblib.dump(best_model, os.path.join(
             save_best_model, 'best_model.pkl'))
         record[trail_name].append(details)
-    return 
+    return record
 
 '''
 def pipe_score(scorings_, df, classifier_, prep_, preprocessor_, train_params, path_):

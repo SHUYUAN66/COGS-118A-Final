@@ -1,9 +1,11 @@
 
+
+import functools
 import sys
-from tkinter import NONE
+
 import numpy as np
 from sklearn.compose import make_column_selector as selector
-from sklearn.preprocessing import StandardScaler,  OneHotEncoder, OrdinalEncoder
+from sklearn.preprocessing import LabelBinarizer, StandardScaler,  OneHotEncoder, OrdinalEncoder
 import seaborn as sns
 import pandas as pd
 from sklearn.compose import ColumnTransformer
@@ -16,7 +18,6 @@ sys.path.insert(0, '/scripts')
 from save import *
 # Basic
 from sklearn.metrics import  make_scorer, f1_score, accuracy_score, mean_squared_error, average_precision_score, roc_auc_score, log_loss, recall_score,precision_score
-
 """
 * The DataFrame: 
     group1: ACC, FSC, LFT
@@ -47,8 +48,8 @@ knn_params = {'classifier': [KNeighborsClassifier()],
 svm_params = {'classifier': [SVC()],
               'classifier__C': C,
               'classifier__gamma': gamma,
-              'classifier__kernel': ['rbf', 'linear'],
-              'classifier__strategy': ['mean', 'median']}
+              'classifier__kernel': ['rbf', 'poly'],
+              }
 dtr_params = {'classifier': [DecisionTreeClassifier()],
               'classifier__min_samples_split':  range(2, 403, 10),
               'classifier__criterion': ['gini', 'entropy'],
@@ -75,7 +76,7 @@ preprocessor = ColumnTransformer(transformers=[('categoricals', categorical_tran
                                                    dtype_include=["int",'float']))
                                                ])
 preprocessor_ordinal = ColumnTransformer(transformers=[('categoricals', ordinal_transformer,
-                                                selector(dtype_include=["object", "category"])),
+                                                        selector(dtype_exclude=["int"])),
                                                ('numericals', numeric_transformer, selector(
                                                    dtype_include=["int", 'float']))
                                                ])
@@ -97,11 +98,20 @@ prep_org = [
     {'preprocessing__numericals': [numeric_transformer],
      'preprocessing__numericals__miss__strategy': ['mean', 'median', 'most_frequent']}
 ]
+#multiclass_roc_auc = functools.partial(roc_auc_score, average=np.average)
+def multiclass_roc_auc_score(y_test, y_pred, average="macro"):
+    lb = LabelBinarizer()
+    lb.fit(y_test)
+    y_test = lb.transform(y_test)
+    y_pred = lb.transform(y_pred)
+    return roc_auc_score(y_test, y_pred, average=average)
+
+
+ROC = make_scorer(multiclass_roc_auc_score)
 ACC = make_scorer(accuracy_score)
 PRC = make_scorer(precision_score, average ='micro' )
 FSC = make_scorer(f1_score, average='macro')
 LFT = make_scorer(recall_score, average='macro')
-ROC = make_scorer(roc_auc_score)
 APR = make_scorer(average_precision_score, average='macro')
 RMS = make_scorer(mean_squared_error)
 MXE = make_scorer(log_loss)
@@ -115,29 +125,33 @@ ad_test = pd.read_csv('data/test/adult.csv')
 nsr_test = pd.read_csv('data/test/nsr.csv')
 avl_test = pd.read_csv('data/test/avl.csv')
 
-scores_info = {'ACC':ACC,
+scores_info = {"ROC": ROC,
+               'APR': APR,
+               'RMS': RMS,
+               'MXE': MXE,
+               'ACC': ACC,
                'PRC':PRC,
-               'FSC':FSC,
-               'LFT':LFT,
-               'ROC':ROC,
-               'APR':APR,
-               'RMS':RMS,
-               'MXE':MXE}
+               'FSC': FSC,
+               'LFT': LFT,
+               }
 # TODO!
-more_scores = {'MEAN':'bb',
+more_scores = {
+                'MEAN':'bb',
               'OPT-SEL':'aa'}
 
 knn_info={'knn':[KNeighborsClassifier(),knn_params]}
-svm_info={'svm':[SVC(),svm_params]}
+svm_info = {'svm': [SVC(), svm_params]}
 dtree_info={'dtree':[DecisionTreeClassifier(),dtr_params]}
 avl_info={"avl":[avl_train,avl_test]}
 adult_info ={'adult':[ad_train, ad_test]}
 nsr_info ={'nursery':[nsr_train, nsr_test]}
 
 # save_trails(pre_params_, preprocessor_, alg, scr, data)
-save_trails(prep_org, preprocessor_ordinal, knn_info, scores_info, nsr_info)
+#nsr_knn=save_trails(prep_org, preprocessor, knn_info, scores_info, nsr_info)
 print('finish knn')
-save_trails(prep_org, preprocessor_ordinal, svm_info, scores_info, nsr_info)
+print('start_svm')
+nsr_svm=save_trails(prep_org, preprocessor, svm_info, scores_info, nsr_info)
 print('finish svm')
-save_trails(prep_org, preprocessor_ordinal, dtree_info, scores_info, nsr_info)
+print('start dtree')
+nsr_dtree=save_trails(prep_org, preprocessor, dtree_info, scores_info, nsr_info)
 print('finished dtree' )
