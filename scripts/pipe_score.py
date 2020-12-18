@@ -1,11 +1,10 @@
-from sklearn.metrics import recall_score
+import os
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.svm import SVC
 from sklearn.pipeline import Pipeline
 from sklearn.neighbors import KNeighborsClassifier
-from pprintpp import pprint
-from sklearn.model_selection import KFold, train_test_split, GridSearchCV
-
+from sklearn.model_selection import train_test_split, GridSearchCV
+import joblib
 
 # delete later
 
@@ -26,7 +25,18 @@ refer: https://www.kaggle.com/kevinarvai/fine-tuning-a-classifier-in-scikit-lear
 
 # accuracy
 #Columns = {'accuracy': ACC, 'f1': FSC, 'recall':LFT, MCC, ROC, APR, BEP, RMS, MXE}
-def pipe_score(scorings_, df, classifier_, prep_, preprocessor_, train_params):
+def check_directory(lst):
+    for i in lst:
+        CHECK_FOLDER = os.path.isdir(i)
+        # If folder doesn't exist, then create it.
+        if not CHECK_FOLDER:
+            os.makedirs(i)
+            print("created folder : ", i)
+        else:
+            print(i, "folder already exists.")
+
+def pipe_score(scorings_, df, classifier_, prep_, preprocessor_, train_params, path_):
+    way = classifier_
     params = 0
     if classifier_ == 'knn':
         classifier_ = KNeighborsClassifier()
@@ -42,34 +52,42 @@ def pipe_score(scorings_, df, classifier_, prep_, preprocessor_, train_params):
         prep_.append(train_params)
         
     params = prep_
-    
+    name = ['ACC', 'FSC', 'LFT', 'ROC', 'APR', 'BEP', 'RMS', 'MXE']
     pipeline = Pipeline([
         ('preprocessing', preprocessor_),
         ('classifier', classifier_)])
     # next
-    each_score = {}
     X = df.drop(columns=['target'])
     y = df.target
-    for score in scorings_:
+    for i in range(len(scorings_)):
+        
+        score= scorings_[i]
         print("# Tuning hyper-parameters for %s" % score)
         print()
         X_train, X_test, y_train, y_test = train_test_split(
             X, y, test_size=0.2)
         print(pipeline)
-        clf = GridSearchCV(pipeline, params, scoring=score, cv=3,
+        clf = GridSearchCV(pipeline, params, scoring=score, cv=5,
                            n_jobs=-1, refit=callable, return_train_score=True)
         clf.fit(X_train, y_train)
-        print("**pipeline**:", [name for name, _ in pipeline.steps])
+        # only save best hyperparmas model
+        print('processing to save all.....')
+        
+        save_all_on_alg = os.path.join(path_, name[i])
+        save_all_on_data = os.path.join('models/', way)
+        save_good_alg =os.path.join('models/best_models', way)
+        
+        lst_ = [save_all_on_alg, save_all_on_data, save_good_alg]
+        check_directory(lst_)
+        joblib.dump(clf, os.path.join(save_all_on_alg, way+'_all.pkl'))
+        joblib.dump(clf, os.path.join(save_all_on_data, name[i]+'_all.pkl'))
+        print('saved all models')
+        print('')
+        print('search best model...')
+        # save all models
+        print(clf.return_train_score,";")
+        joblib.dump(clf.best_estimator_, os.path.join(
+            save_good_alg, name[i]+'best.pkl'))
+        print("SAVE! ")
         print()
-        print("parameters:")
-        print(params)
-        print()
-        print("Best parameters set found on development set:")
-        print(" ", clf.best_params_)
-        print()
-        print("Best estimator found:")
-        print(" ", clf.best_estimator_)
-        print()
-        y_true, y_pred = y_test, clf.predict(X_test)
-        each_score[score] = recall_score(y_true, y_pred)
-    return each_score
+    return

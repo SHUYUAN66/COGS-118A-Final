@@ -1,0 +1,1931 @@
+{
+    "uid": "5d497cbb-af07-4292-8896-d171dcb8451a",
+    "name": "1_DecisionTree",
+    "preprocessing": [
+        {
+            "categorical": [
+                {
+                    "convert_method": "categorical_to_onehot",
+                    "convert_params": {
+                        "parents": {
+                            "new_columns": [
+                                "parents_great_pret",
+                                "parents_pretentious",
+                                "parents_usual"
+                            ],
+                            "unique_values": [
+                                "great_pret",
+                                "pretentious",
+                                "usual"
+                            ],
+                            "old_column": "parents"
+                        },
+                        "has_nurs": {
+                            "new_columns": [
+                                "has_nurs_critical",
+                                "has_nurs_improper",
+                                "has_nurs_less_proper",
+                                "has_nurs_proper",
+                                "has_nurs_very_crit"
+                            ],
+                            "unique_values": [
+                                "critical",
+                                "improper",
+                                "less_proper",
+                                "proper",
+                                "very_crit"
+                            ],
+                            "old_column": "has_nurs"
+                        },
+                        "form": {
+                            "new_columns": [
+                                "form_complete",
+                                "form_completed",
+                                "form_foster",
+                                "form_incomplete"
+                            ],
+                            "unique_values": [
+                                "complete",
+                                "completed",
+                                "foster",
+                                "incomplete"
+                            ],
+                            "old_column": "form"
+                        },
+                        "children": {
+                            "new_columns": [
+                                "children_1",
+                                "children_2",
+                                "children_3",
+                                "children_more"
+                            ],
+                            "unique_values": [
+                                "1",
+                                "2",
+                                "3",
+                                "more"
+                            ],
+                            "old_column": "children"
+                        },
+                        "housing": {
+                            "new_columns": [
+                                "housing_convenient",
+                                "housing_critical",
+                                "housing_less_conv"
+                            ],
+                            "unique_values": [
+                                "convenient",
+                                "critical",
+                                "less_conv"
+                            ],
+                            "old_column": "housing"
+                        },
+                        "finance": {
+                            "new_columns": [
+                                "finance_inconv"
+                            ],
+                            "unique_values": [
+                                "convenient",
+                                "inconv"
+                            ],
+                            "old_column": "finance"
+                        },
+                        "social": {
+                            "new_columns": [
+                                "social_nonprob",
+                                "social_problematic",
+                                "social_slightly_prob"
+                            ],
+                            "unique_values": [
+                                "nonprob",
+                                "problematic",
+                                "slightly_prob"
+                            ],
+                            "old_column": "social"
+                        },
+                        "health": {
+                            "new_columns": [
+                                "health_not_recom",
+                                "health_priority",
+                                "health_recommended"
+                            ],
+                            "unique_values": [
+                                "not_recom",
+                                "priority",
+                                "recommended"
+                            ],
+                            "old_column": "health"
+                        }
+                    },
+                    "columns": [
+                        "parents",
+                        "has_nurs",
+                        "form",
+                        "children",
+                        "housing",
+                        "finance",
+                        "social",
+                        "health"
+                    ]
+                }
+            ],
+            "categorical_y": {
+                "not_recom": 0,
+                "priority": 1,
+                "recommend": 2,
+                "spec_prior": 3,
+                "very_recom": 4
+            },
+            "ml_task": "multiclass_classification",
+            "params": {
+                "columns_preprocessing": {
+                    "parents": [
+                        "categorical_to_onehot"
+                    ],
+                    "has_nurs": [
+                        "categorical_to_onehot"
+                    ],
+                    "form": [
+                        "categorical_to_onehot"
+                    ],
+                    "children": [
+                        "categorical_to_onehot"
+                    ],
+                    "housing": [
+                        "categorical_to_onehot"
+                    ],
+                    "finance": [
+                        "categorical_to_onehot"
+                    ],
+                    "social": [
+                        "categorical_to_onehot"
+                    ],
+                    "health": [
+                        "categorical_to_onehot"
+                    ]
+                },
+                "target_preprocessing": [
+                    "na_exclude",
+                    "categorical_to_int"
+                ],
+                "ml_task": "multiclass_classification"
+            }
+        },
+        {
+            "categorical": [
+                {
+                    "convert_method": "categorical_to_onehot",
+                    "convert_params": {
+                        "parents": {
+                            "new_columns": [
+                                "parents_great_pret",
+                                "parents_pretentious",
+                                "parents_usual"
+                            ],
+                            "unique_values": [
+                                "great_pret",
+                                "pretentious",
+                                "usual"
+                            ],
+                            "old_column": "parents"
+                        },
+                        "has_nurs": {
+                            "new_columns": [
+                                "has_nurs_critical",
+                                "has_nurs_improper",
+                                "has_nurs_less_proper",
+                                "has_nurs_proper",
+                                "has_nurs_very_crit"
+                            ],
+                            "unique_values": [
+                                "critical",
+                                "improper",
+                                "less_proper",
+                                "proper",
+                                "very_crit"
+                            ],
+                            "old_column": "has_nurs"
+                        },
+                        "form": {
+                            "new_columns": [
+                                "form_complete",
+                                "form_completed",
+                                "form_foster",
+                                "form_incomplete"
+                            ],
+                            "unique_values": [
+                                "complete",
+                                "completed",
+                                "foster",
+                                "incomplete"
+                            ],
+                            "old_column": "form"
+                        },
+                        "children": {
+                            "new_columns": [
+                                "children_1",
+                                "children_2",
+                                "children_3",
+                                "children_more"
+                            ],
+                            "unique_values": [
+                                "1",
+                                "2",
+                                "3",
+                                "more"
+                            ],
+                            "old_column": "children"
+                        },
+                        "housing": {
+                            "new_columns": [
+                                "housing_convenient",
+                                "housing_critical",
+                                "housing_less_conv"
+                            ],
+                            "unique_values": [
+                                "convenient",
+                                "critical",
+                                "less_conv"
+                            ],
+                            "old_column": "housing"
+                        },
+                        "finance": {
+                            "new_columns": [
+                                "finance_inconv"
+                            ],
+                            "unique_values": [
+                                "convenient",
+                                "inconv"
+                            ],
+                            "old_column": "finance"
+                        },
+                        "social": {
+                            "new_columns": [
+                                "social_nonprob",
+                                "social_problematic",
+                                "social_slightly_prob"
+                            ],
+                            "unique_values": [
+                                "nonprob",
+                                "problematic",
+                                "slightly_prob"
+                            ],
+                            "old_column": "social"
+                        },
+                        "health": {
+                            "new_columns": [
+                                "health_not_recom",
+                                "health_priority",
+                                "health_recommended"
+                            ],
+                            "unique_values": [
+                                "not_recom",
+                                "priority",
+                                "recommended"
+                            ],
+                            "old_column": "health"
+                        }
+                    },
+                    "columns": [
+                        "parents",
+                        "has_nurs",
+                        "form",
+                        "children",
+                        "housing",
+                        "finance",
+                        "social",
+                        "health"
+                    ]
+                }
+            ],
+            "categorical_y": {
+                "not_recom": 0,
+                "priority": 1,
+                "recommend": 2,
+                "spec_prior": 3,
+                "very_recom": 4
+            },
+            "ml_task": "multiclass_classification",
+            "params": {
+                "columns_preprocessing": {
+                    "parents": [
+                        "categorical_to_onehot"
+                    ],
+                    "has_nurs": [
+                        "categorical_to_onehot"
+                    ],
+                    "form": [
+                        "categorical_to_onehot"
+                    ],
+                    "children": [
+                        "categorical_to_onehot"
+                    ],
+                    "housing": [
+                        "categorical_to_onehot"
+                    ],
+                    "finance": [
+                        "categorical_to_onehot"
+                    ],
+                    "social": [
+                        "categorical_to_onehot"
+                    ],
+                    "health": [
+                        "categorical_to_onehot"
+                    ]
+                },
+                "target_preprocessing": [
+                    "na_exclude",
+                    "categorical_to_int"
+                ],
+                "ml_task": "multiclass_classification"
+            }
+        },
+        {
+            "categorical": [
+                {
+                    "convert_method": "categorical_to_onehot",
+                    "convert_params": {
+                        "parents": {
+                            "new_columns": [
+                                "parents_great_pret",
+                                "parents_pretentious",
+                                "parents_usual"
+                            ],
+                            "unique_values": [
+                                "great_pret",
+                                "pretentious",
+                                "usual"
+                            ],
+                            "old_column": "parents"
+                        },
+                        "has_nurs": {
+                            "new_columns": [
+                                "has_nurs_critical",
+                                "has_nurs_improper",
+                                "has_nurs_less_proper",
+                                "has_nurs_proper",
+                                "has_nurs_very_crit"
+                            ],
+                            "unique_values": [
+                                "critical",
+                                "improper",
+                                "less_proper",
+                                "proper",
+                                "very_crit"
+                            ],
+                            "old_column": "has_nurs"
+                        },
+                        "form": {
+                            "new_columns": [
+                                "form_complete",
+                                "form_completed",
+                                "form_foster",
+                                "form_incomplete"
+                            ],
+                            "unique_values": [
+                                "complete",
+                                "completed",
+                                "foster",
+                                "incomplete"
+                            ],
+                            "old_column": "form"
+                        },
+                        "children": {
+                            "new_columns": [
+                                "children_1",
+                                "children_2",
+                                "children_3",
+                                "children_more"
+                            ],
+                            "unique_values": [
+                                "1",
+                                "2",
+                                "3",
+                                "more"
+                            ],
+                            "old_column": "children"
+                        },
+                        "housing": {
+                            "new_columns": [
+                                "housing_convenient",
+                                "housing_critical",
+                                "housing_less_conv"
+                            ],
+                            "unique_values": [
+                                "convenient",
+                                "critical",
+                                "less_conv"
+                            ],
+                            "old_column": "housing"
+                        },
+                        "finance": {
+                            "new_columns": [
+                                "finance_inconv"
+                            ],
+                            "unique_values": [
+                                "convenient",
+                                "inconv"
+                            ],
+                            "old_column": "finance"
+                        },
+                        "social": {
+                            "new_columns": [
+                                "social_nonprob",
+                                "social_problematic",
+                                "social_slightly_prob"
+                            ],
+                            "unique_values": [
+                                "nonprob",
+                                "problematic",
+                                "slightly_prob"
+                            ],
+                            "old_column": "social"
+                        },
+                        "health": {
+                            "new_columns": [
+                                "health_not_recom",
+                                "health_priority",
+                                "health_recommended"
+                            ],
+                            "unique_values": [
+                                "not_recom",
+                                "priority",
+                                "recommended"
+                            ],
+                            "old_column": "health"
+                        }
+                    },
+                    "columns": [
+                        "parents",
+                        "has_nurs",
+                        "form",
+                        "children",
+                        "housing",
+                        "finance",
+                        "social",
+                        "health"
+                    ]
+                }
+            ],
+            "categorical_y": {
+                "not_recom": 0,
+                "priority": 1,
+                "recommend": 2,
+                "spec_prior": 3,
+                "very_recom": 4
+            },
+            "ml_task": "multiclass_classification",
+            "params": {
+                "columns_preprocessing": {
+                    "parents": [
+                        "categorical_to_onehot"
+                    ],
+                    "has_nurs": [
+                        "categorical_to_onehot"
+                    ],
+                    "form": [
+                        "categorical_to_onehot"
+                    ],
+                    "children": [
+                        "categorical_to_onehot"
+                    ],
+                    "housing": [
+                        "categorical_to_onehot"
+                    ],
+                    "finance": [
+                        "categorical_to_onehot"
+                    ],
+                    "social": [
+                        "categorical_to_onehot"
+                    ],
+                    "health": [
+                        "categorical_to_onehot"
+                    ]
+                },
+                "target_preprocessing": [
+                    "na_exclude",
+                    "categorical_to_int"
+                ],
+                "ml_task": "multiclass_classification"
+            }
+        },
+        {
+            "categorical": [
+                {
+                    "convert_method": "categorical_to_onehot",
+                    "convert_params": {
+                        "parents": {
+                            "new_columns": [
+                                "parents_great_pret",
+                                "parents_pretentious",
+                                "parents_usual"
+                            ],
+                            "unique_values": [
+                                "great_pret",
+                                "pretentious",
+                                "usual"
+                            ],
+                            "old_column": "parents"
+                        },
+                        "has_nurs": {
+                            "new_columns": [
+                                "has_nurs_critical",
+                                "has_nurs_improper",
+                                "has_nurs_less_proper",
+                                "has_nurs_proper",
+                                "has_nurs_very_crit"
+                            ],
+                            "unique_values": [
+                                "critical",
+                                "improper",
+                                "less_proper",
+                                "proper",
+                                "very_crit"
+                            ],
+                            "old_column": "has_nurs"
+                        },
+                        "form": {
+                            "new_columns": [
+                                "form_complete",
+                                "form_completed",
+                                "form_foster",
+                                "form_incomplete"
+                            ],
+                            "unique_values": [
+                                "complete",
+                                "completed",
+                                "foster",
+                                "incomplete"
+                            ],
+                            "old_column": "form"
+                        },
+                        "children": {
+                            "new_columns": [
+                                "children_1",
+                                "children_2",
+                                "children_3",
+                                "children_more"
+                            ],
+                            "unique_values": [
+                                "1",
+                                "2",
+                                "3",
+                                "more"
+                            ],
+                            "old_column": "children"
+                        },
+                        "housing": {
+                            "new_columns": [
+                                "housing_convenient",
+                                "housing_critical",
+                                "housing_less_conv"
+                            ],
+                            "unique_values": [
+                                "convenient",
+                                "critical",
+                                "less_conv"
+                            ],
+                            "old_column": "housing"
+                        },
+                        "finance": {
+                            "new_columns": [
+                                "finance_inconv"
+                            ],
+                            "unique_values": [
+                                "convenient",
+                                "inconv"
+                            ],
+                            "old_column": "finance"
+                        },
+                        "social": {
+                            "new_columns": [
+                                "social_nonprob",
+                                "social_problematic",
+                                "social_slightly_prob"
+                            ],
+                            "unique_values": [
+                                "nonprob",
+                                "problematic",
+                                "slightly_prob"
+                            ],
+                            "old_column": "social"
+                        },
+                        "health": {
+                            "new_columns": [
+                                "health_not_recom",
+                                "health_priority",
+                                "health_recommended"
+                            ],
+                            "unique_values": [
+                                "not_recom",
+                                "priority",
+                                "recommended"
+                            ],
+                            "old_column": "health"
+                        }
+                    },
+                    "columns": [
+                        "parents",
+                        "has_nurs",
+                        "form",
+                        "children",
+                        "housing",
+                        "finance",
+                        "social",
+                        "health"
+                    ]
+                }
+            ],
+            "categorical_y": {
+                "not_recom": 0,
+                "priority": 1,
+                "recommend": 2,
+                "spec_prior": 3,
+                "very_recom": 4
+            },
+            "ml_task": "multiclass_classification",
+            "params": {
+                "columns_preprocessing": {
+                    "parents": [
+                        "categorical_to_onehot"
+                    ],
+                    "has_nurs": [
+                        "categorical_to_onehot"
+                    ],
+                    "form": [
+                        "categorical_to_onehot"
+                    ],
+                    "children": [
+                        "categorical_to_onehot"
+                    ],
+                    "housing": [
+                        "categorical_to_onehot"
+                    ],
+                    "finance": [
+                        "categorical_to_onehot"
+                    ],
+                    "social": [
+                        "categorical_to_onehot"
+                    ],
+                    "health": [
+                        "categorical_to_onehot"
+                    ]
+                },
+                "target_preprocessing": [
+                    "na_exclude",
+                    "categorical_to_int"
+                ],
+                "ml_task": "multiclass_classification"
+            }
+        },
+        {
+            "categorical": [
+                {
+                    "convert_method": "categorical_to_onehot",
+                    "convert_params": {
+                        "parents": {
+                            "new_columns": [
+                                "parents_great_pret",
+                                "parents_pretentious",
+                                "parents_usual"
+                            ],
+                            "unique_values": [
+                                "great_pret",
+                                "pretentious",
+                                "usual"
+                            ],
+                            "old_column": "parents"
+                        },
+                        "has_nurs": {
+                            "new_columns": [
+                                "has_nurs_critical",
+                                "has_nurs_improper",
+                                "has_nurs_less_proper",
+                                "has_nurs_proper",
+                                "has_nurs_very_crit"
+                            ],
+                            "unique_values": [
+                                "critical",
+                                "improper",
+                                "less_proper",
+                                "proper",
+                                "very_crit"
+                            ],
+                            "old_column": "has_nurs"
+                        },
+                        "form": {
+                            "new_columns": [
+                                "form_complete",
+                                "form_completed",
+                                "form_foster",
+                                "form_incomplete"
+                            ],
+                            "unique_values": [
+                                "complete",
+                                "completed",
+                                "foster",
+                                "incomplete"
+                            ],
+                            "old_column": "form"
+                        },
+                        "children": {
+                            "new_columns": [
+                                "children_1",
+                                "children_2",
+                                "children_3",
+                                "children_more"
+                            ],
+                            "unique_values": [
+                                "1",
+                                "2",
+                                "3",
+                                "more"
+                            ],
+                            "old_column": "children"
+                        },
+                        "housing": {
+                            "new_columns": [
+                                "housing_convenient",
+                                "housing_critical",
+                                "housing_less_conv"
+                            ],
+                            "unique_values": [
+                                "convenient",
+                                "critical",
+                                "less_conv"
+                            ],
+                            "old_column": "housing"
+                        },
+                        "finance": {
+                            "new_columns": [
+                                "finance_inconv"
+                            ],
+                            "unique_values": [
+                                "convenient",
+                                "inconv"
+                            ],
+                            "old_column": "finance"
+                        },
+                        "social": {
+                            "new_columns": [
+                                "social_nonprob",
+                                "social_problematic",
+                                "social_slightly_prob"
+                            ],
+                            "unique_values": [
+                                "nonprob",
+                                "problematic",
+                                "slightly_prob"
+                            ],
+                            "old_column": "social"
+                        },
+                        "health": {
+                            "new_columns": [
+                                "health_not_recom",
+                                "health_priority",
+                                "health_recommended"
+                            ],
+                            "unique_values": [
+                                "not_recom",
+                                "priority",
+                                "recommended"
+                            ],
+                            "old_column": "health"
+                        }
+                    },
+                    "columns": [
+                        "parents",
+                        "has_nurs",
+                        "form",
+                        "children",
+                        "housing",
+                        "finance",
+                        "social",
+                        "health"
+                    ]
+                }
+            ],
+            "categorical_y": {
+                "not_recom": 0,
+                "priority": 1,
+                "recommend": 2,
+                "spec_prior": 3,
+                "very_recom": 4
+            },
+            "ml_task": "multiclass_classification",
+            "params": {
+                "columns_preprocessing": {
+                    "parents": [
+                        "categorical_to_onehot"
+                    ],
+                    "has_nurs": [
+                        "categorical_to_onehot"
+                    ],
+                    "form": [
+                        "categorical_to_onehot"
+                    ],
+                    "children": [
+                        "categorical_to_onehot"
+                    ],
+                    "housing": [
+                        "categorical_to_onehot"
+                    ],
+                    "finance": [
+                        "categorical_to_onehot"
+                    ],
+                    "social": [
+                        "categorical_to_onehot"
+                    ],
+                    "health": [
+                        "categorical_to_onehot"
+                    ]
+                },
+                "target_preprocessing": [
+                    "na_exclude",
+                    "categorical_to_int"
+                ],
+                "ml_task": "multiclass_classification"
+            }
+        },
+        {
+            "categorical": [
+                {
+                    "convert_method": "categorical_to_onehot",
+                    "convert_params": {
+                        "parents": {
+                            "new_columns": [
+                                "parents_great_pret",
+                                "parents_pretentious",
+                                "parents_usual"
+                            ],
+                            "unique_values": [
+                                "great_pret",
+                                "pretentious",
+                                "usual"
+                            ],
+                            "old_column": "parents"
+                        },
+                        "has_nurs": {
+                            "new_columns": [
+                                "has_nurs_critical",
+                                "has_nurs_improper",
+                                "has_nurs_less_proper",
+                                "has_nurs_proper",
+                                "has_nurs_very_crit"
+                            ],
+                            "unique_values": [
+                                "critical",
+                                "improper",
+                                "less_proper",
+                                "proper",
+                                "very_crit"
+                            ],
+                            "old_column": "has_nurs"
+                        },
+                        "form": {
+                            "new_columns": [
+                                "form_complete",
+                                "form_completed",
+                                "form_foster",
+                                "form_incomplete"
+                            ],
+                            "unique_values": [
+                                "complete",
+                                "completed",
+                                "foster",
+                                "incomplete"
+                            ],
+                            "old_column": "form"
+                        },
+                        "children": {
+                            "new_columns": [
+                                "children_1",
+                                "children_2",
+                                "children_3",
+                                "children_more"
+                            ],
+                            "unique_values": [
+                                "1",
+                                "2",
+                                "3",
+                                "more"
+                            ],
+                            "old_column": "children"
+                        },
+                        "housing": {
+                            "new_columns": [
+                                "housing_convenient",
+                                "housing_critical",
+                                "housing_less_conv"
+                            ],
+                            "unique_values": [
+                                "convenient",
+                                "critical",
+                                "less_conv"
+                            ],
+                            "old_column": "housing"
+                        },
+                        "finance": {
+                            "new_columns": [
+                                "finance_inconv"
+                            ],
+                            "unique_values": [
+                                "convenient",
+                                "inconv"
+                            ],
+                            "old_column": "finance"
+                        },
+                        "social": {
+                            "new_columns": [
+                                "social_nonprob",
+                                "social_problematic",
+                                "social_slightly_prob"
+                            ],
+                            "unique_values": [
+                                "nonprob",
+                                "problematic",
+                                "slightly_prob"
+                            ],
+                            "old_column": "social"
+                        },
+                        "health": {
+                            "new_columns": [
+                                "health_not_recom",
+                                "health_priority",
+                                "health_recommended"
+                            ],
+                            "unique_values": [
+                                "not_recom",
+                                "priority",
+                                "recommended"
+                            ],
+                            "old_column": "health"
+                        }
+                    },
+                    "columns": [
+                        "parents",
+                        "has_nurs",
+                        "form",
+                        "children",
+                        "housing",
+                        "finance",
+                        "social",
+                        "health"
+                    ]
+                }
+            ],
+            "categorical_y": {
+                "not_recom": 0,
+                "priority": 1,
+                "recommend": 2,
+                "spec_prior": 3,
+                "very_recom": 4
+            },
+            "ml_task": "multiclass_classification",
+            "params": {
+                "columns_preprocessing": {
+                    "parents": [
+                        "categorical_to_onehot"
+                    ],
+                    "has_nurs": [
+                        "categorical_to_onehot"
+                    ],
+                    "form": [
+                        "categorical_to_onehot"
+                    ],
+                    "children": [
+                        "categorical_to_onehot"
+                    ],
+                    "housing": [
+                        "categorical_to_onehot"
+                    ],
+                    "finance": [
+                        "categorical_to_onehot"
+                    ],
+                    "social": [
+                        "categorical_to_onehot"
+                    ],
+                    "health": [
+                        "categorical_to_onehot"
+                    ]
+                },
+                "target_preprocessing": [
+                    "na_exclude",
+                    "categorical_to_int"
+                ],
+                "ml_task": "multiclass_classification"
+            }
+        },
+        {
+            "categorical": [
+                {
+                    "convert_method": "categorical_to_onehot",
+                    "convert_params": {
+                        "parents": {
+                            "new_columns": [
+                                "parents_great_pret",
+                                "parents_pretentious",
+                                "parents_usual"
+                            ],
+                            "unique_values": [
+                                "great_pret",
+                                "pretentious",
+                                "usual"
+                            ],
+                            "old_column": "parents"
+                        },
+                        "has_nurs": {
+                            "new_columns": [
+                                "has_nurs_critical",
+                                "has_nurs_improper",
+                                "has_nurs_less_proper",
+                                "has_nurs_proper",
+                                "has_nurs_very_crit"
+                            ],
+                            "unique_values": [
+                                "critical",
+                                "improper",
+                                "less_proper",
+                                "proper",
+                                "very_crit"
+                            ],
+                            "old_column": "has_nurs"
+                        },
+                        "form": {
+                            "new_columns": [
+                                "form_complete",
+                                "form_completed",
+                                "form_foster",
+                                "form_incomplete"
+                            ],
+                            "unique_values": [
+                                "complete",
+                                "completed",
+                                "foster",
+                                "incomplete"
+                            ],
+                            "old_column": "form"
+                        },
+                        "children": {
+                            "new_columns": [
+                                "children_1",
+                                "children_2",
+                                "children_3",
+                                "children_more"
+                            ],
+                            "unique_values": [
+                                "1",
+                                "2",
+                                "3",
+                                "more"
+                            ],
+                            "old_column": "children"
+                        },
+                        "housing": {
+                            "new_columns": [
+                                "housing_convenient",
+                                "housing_critical",
+                                "housing_less_conv"
+                            ],
+                            "unique_values": [
+                                "convenient",
+                                "critical",
+                                "less_conv"
+                            ],
+                            "old_column": "housing"
+                        },
+                        "finance": {
+                            "new_columns": [
+                                "finance_inconv"
+                            ],
+                            "unique_values": [
+                                "convenient",
+                                "inconv"
+                            ],
+                            "old_column": "finance"
+                        },
+                        "social": {
+                            "new_columns": [
+                                "social_nonprob",
+                                "social_problematic",
+                                "social_slightly_prob"
+                            ],
+                            "unique_values": [
+                                "nonprob",
+                                "problematic",
+                                "slightly_prob"
+                            ],
+                            "old_column": "social"
+                        },
+                        "health": {
+                            "new_columns": [
+                                "health_not_recom",
+                                "health_priority",
+                                "health_recommended"
+                            ],
+                            "unique_values": [
+                                "not_recom",
+                                "priority",
+                                "recommended"
+                            ],
+                            "old_column": "health"
+                        }
+                    },
+                    "columns": [
+                        "parents",
+                        "has_nurs",
+                        "form",
+                        "children",
+                        "housing",
+                        "finance",
+                        "social",
+                        "health"
+                    ]
+                }
+            ],
+            "categorical_y": {
+                "not_recom": 0,
+                "priority": 1,
+                "recommend": 2,
+                "spec_prior": 3,
+                "very_recom": 4
+            },
+            "ml_task": "multiclass_classification",
+            "params": {
+                "columns_preprocessing": {
+                    "parents": [
+                        "categorical_to_onehot"
+                    ],
+                    "has_nurs": [
+                        "categorical_to_onehot"
+                    ],
+                    "form": [
+                        "categorical_to_onehot"
+                    ],
+                    "children": [
+                        "categorical_to_onehot"
+                    ],
+                    "housing": [
+                        "categorical_to_onehot"
+                    ],
+                    "finance": [
+                        "categorical_to_onehot"
+                    ],
+                    "social": [
+                        "categorical_to_onehot"
+                    ],
+                    "health": [
+                        "categorical_to_onehot"
+                    ]
+                },
+                "target_preprocessing": [
+                    "na_exclude",
+                    "categorical_to_int"
+                ],
+                "ml_task": "multiclass_classification"
+            }
+        },
+        {
+            "categorical": [
+                {
+                    "convert_method": "categorical_to_onehot",
+                    "convert_params": {
+                        "parents": {
+                            "new_columns": [
+                                "parents_great_pret",
+                                "parents_pretentious",
+                                "parents_usual"
+                            ],
+                            "unique_values": [
+                                "great_pret",
+                                "pretentious",
+                                "usual"
+                            ],
+                            "old_column": "parents"
+                        },
+                        "has_nurs": {
+                            "new_columns": [
+                                "has_nurs_critical",
+                                "has_nurs_improper",
+                                "has_nurs_less_proper",
+                                "has_nurs_proper",
+                                "has_nurs_very_crit"
+                            ],
+                            "unique_values": [
+                                "critical",
+                                "improper",
+                                "less_proper",
+                                "proper",
+                                "very_crit"
+                            ],
+                            "old_column": "has_nurs"
+                        },
+                        "form": {
+                            "new_columns": [
+                                "form_complete",
+                                "form_completed",
+                                "form_foster",
+                                "form_incomplete"
+                            ],
+                            "unique_values": [
+                                "complete",
+                                "completed",
+                                "foster",
+                                "incomplete"
+                            ],
+                            "old_column": "form"
+                        },
+                        "children": {
+                            "new_columns": [
+                                "children_1",
+                                "children_2",
+                                "children_3",
+                                "children_more"
+                            ],
+                            "unique_values": [
+                                "1",
+                                "2",
+                                "3",
+                                "more"
+                            ],
+                            "old_column": "children"
+                        },
+                        "housing": {
+                            "new_columns": [
+                                "housing_convenient",
+                                "housing_critical",
+                                "housing_less_conv"
+                            ],
+                            "unique_values": [
+                                "convenient",
+                                "critical",
+                                "less_conv"
+                            ],
+                            "old_column": "housing"
+                        },
+                        "finance": {
+                            "new_columns": [
+                                "finance_inconv"
+                            ],
+                            "unique_values": [
+                                "convenient",
+                                "inconv"
+                            ],
+                            "old_column": "finance"
+                        },
+                        "social": {
+                            "new_columns": [
+                                "social_nonprob",
+                                "social_problematic",
+                                "social_slightly_prob"
+                            ],
+                            "unique_values": [
+                                "nonprob",
+                                "problematic",
+                                "slightly_prob"
+                            ],
+                            "old_column": "social"
+                        },
+                        "health": {
+                            "new_columns": [
+                                "health_not_recom",
+                                "health_priority",
+                                "health_recommended"
+                            ],
+                            "unique_values": [
+                                "not_recom",
+                                "priority",
+                                "recommended"
+                            ],
+                            "old_column": "health"
+                        }
+                    },
+                    "columns": [
+                        "parents",
+                        "has_nurs",
+                        "form",
+                        "children",
+                        "housing",
+                        "finance",
+                        "social",
+                        "health"
+                    ]
+                }
+            ],
+            "categorical_y": {
+                "not_recom": 0,
+                "priority": 1,
+                "recommend": 2,
+                "spec_prior": 3,
+                "very_recom": 4
+            },
+            "ml_task": "multiclass_classification",
+            "params": {
+                "columns_preprocessing": {
+                    "parents": [
+                        "categorical_to_onehot"
+                    ],
+                    "has_nurs": [
+                        "categorical_to_onehot"
+                    ],
+                    "form": [
+                        "categorical_to_onehot"
+                    ],
+                    "children": [
+                        "categorical_to_onehot"
+                    ],
+                    "housing": [
+                        "categorical_to_onehot"
+                    ],
+                    "finance": [
+                        "categorical_to_onehot"
+                    ],
+                    "social": [
+                        "categorical_to_onehot"
+                    ],
+                    "health": [
+                        "categorical_to_onehot"
+                    ]
+                },
+                "target_preprocessing": [
+                    "na_exclude",
+                    "categorical_to_int"
+                ],
+                "ml_task": "multiclass_classification"
+            }
+        },
+        {
+            "categorical": [
+                {
+                    "convert_method": "categorical_to_onehot",
+                    "convert_params": {
+                        "parents": {
+                            "new_columns": [
+                                "parents_great_pret",
+                                "parents_pretentious",
+                                "parents_usual"
+                            ],
+                            "unique_values": [
+                                "great_pret",
+                                "pretentious",
+                                "usual"
+                            ],
+                            "old_column": "parents"
+                        },
+                        "has_nurs": {
+                            "new_columns": [
+                                "has_nurs_critical",
+                                "has_nurs_improper",
+                                "has_nurs_less_proper",
+                                "has_nurs_proper",
+                                "has_nurs_very_crit"
+                            ],
+                            "unique_values": [
+                                "critical",
+                                "improper",
+                                "less_proper",
+                                "proper",
+                                "very_crit"
+                            ],
+                            "old_column": "has_nurs"
+                        },
+                        "form": {
+                            "new_columns": [
+                                "form_complete",
+                                "form_completed",
+                                "form_foster",
+                                "form_incomplete"
+                            ],
+                            "unique_values": [
+                                "complete",
+                                "completed",
+                                "foster",
+                                "incomplete"
+                            ],
+                            "old_column": "form"
+                        },
+                        "children": {
+                            "new_columns": [
+                                "children_1",
+                                "children_2",
+                                "children_3",
+                                "children_more"
+                            ],
+                            "unique_values": [
+                                "1",
+                                "2",
+                                "3",
+                                "more"
+                            ],
+                            "old_column": "children"
+                        },
+                        "housing": {
+                            "new_columns": [
+                                "housing_convenient",
+                                "housing_critical",
+                                "housing_less_conv"
+                            ],
+                            "unique_values": [
+                                "convenient",
+                                "critical",
+                                "less_conv"
+                            ],
+                            "old_column": "housing"
+                        },
+                        "finance": {
+                            "new_columns": [
+                                "finance_inconv"
+                            ],
+                            "unique_values": [
+                                "convenient",
+                                "inconv"
+                            ],
+                            "old_column": "finance"
+                        },
+                        "social": {
+                            "new_columns": [
+                                "social_nonprob",
+                                "social_problematic",
+                                "social_slightly_prob"
+                            ],
+                            "unique_values": [
+                                "nonprob",
+                                "problematic",
+                                "slightly_prob"
+                            ],
+                            "old_column": "social"
+                        },
+                        "health": {
+                            "new_columns": [
+                                "health_not_recom",
+                                "health_priority",
+                                "health_recommended"
+                            ],
+                            "unique_values": [
+                                "not_recom",
+                                "priority",
+                                "recommended"
+                            ],
+                            "old_column": "health"
+                        }
+                    },
+                    "columns": [
+                        "parents",
+                        "has_nurs",
+                        "form",
+                        "children",
+                        "housing",
+                        "finance",
+                        "social",
+                        "health"
+                    ]
+                }
+            ],
+            "categorical_y": {
+                "not_recom": 0,
+                "priority": 1,
+                "recommend": 2,
+                "spec_prior": 3,
+                "very_recom": 4
+            },
+            "ml_task": "multiclass_classification",
+            "params": {
+                "columns_preprocessing": {
+                    "parents": [
+                        "categorical_to_onehot"
+                    ],
+                    "has_nurs": [
+                        "categorical_to_onehot"
+                    ],
+                    "form": [
+                        "categorical_to_onehot"
+                    ],
+                    "children": [
+                        "categorical_to_onehot"
+                    ],
+                    "housing": [
+                        "categorical_to_onehot"
+                    ],
+                    "finance": [
+                        "categorical_to_onehot"
+                    ],
+                    "social": [
+                        "categorical_to_onehot"
+                    ],
+                    "health": [
+                        "categorical_to_onehot"
+                    ]
+                },
+                "target_preprocessing": [
+                    "na_exclude",
+                    "categorical_to_int"
+                ],
+                "ml_task": "multiclass_classification"
+            }
+        },
+        {
+            "categorical": [
+                {
+                    "convert_method": "categorical_to_onehot",
+                    "convert_params": {
+                        "parents": {
+                            "new_columns": [
+                                "parents_great_pret",
+                                "parents_pretentious",
+                                "parents_usual"
+                            ],
+                            "unique_values": [
+                                "great_pret",
+                                "pretentious",
+                                "usual"
+                            ],
+                            "old_column": "parents"
+                        },
+                        "has_nurs": {
+                            "new_columns": [
+                                "has_nurs_critical",
+                                "has_nurs_improper",
+                                "has_nurs_less_proper",
+                                "has_nurs_proper",
+                                "has_nurs_very_crit"
+                            ],
+                            "unique_values": [
+                                "critical",
+                                "improper",
+                                "less_proper",
+                                "proper",
+                                "very_crit"
+                            ],
+                            "old_column": "has_nurs"
+                        },
+                        "form": {
+                            "new_columns": [
+                                "form_complete",
+                                "form_completed",
+                                "form_foster",
+                                "form_incomplete"
+                            ],
+                            "unique_values": [
+                                "complete",
+                                "completed",
+                                "foster",
+                                "incomplete"
+                            ],
+                            "old_column": "form"
+                        },
+                        "children": {
+                            "new_columns": [
+                                "children_1",
+                                "children_2",
+                                "children_3",
+                                "children_more"
+                            ],
+                            "unique_values": [
+                                "1",
+                                "2",
+                                "3",
+                                "more"
+                            ],
+                            "old_column": "children"
+                        },
+                        "housing": {
+                            "new_columns": [
+                                "housing_convenient",
+                                "housing_critical",
+                                "housing_less_conv"
+                            ],
+                            "unique_values": [
+                                "convenient",
+                                "critical",
+                                "less_conv"
+                            ],
+                            "old_column": "housing"
+                        },
+                        "finance": {
+                            "new_columns": [
+                                "finance_inconv"
+                            ],
+                            "unique_values": [
+                                "convenient",
+                                "inconv"
+                            ],
+                            "old_column": "finance"
+                        },
+                        "social": {
+                            "new_columns": [
+                                "social_nonprob",
+                                "social_problematic",
+                                "social_slightly_prob"
+                            ],
+                            "unique_values": [
+                                "nonprob",
+                                "problematic",
+                                "slightly_prob"
+                            ],
+                            "old_column": "social"
+                        },
+                        "health": {
+                            "new_columns": [
+                                "health_not_recom",
+                                "health_priority",
+                                "health_recommended"
+                            ],
+                            "unique_values": [
+                                "not_recom",
+                                "priority",
+                                "recommended"
+                            ],
+                            "old_column": "health"
+                        }
+                    },
+                    "columns": [
+                        "parents",
+                        "has_nurs",
+                        "form",
+                        "children",
+                        "housing",
+                        "finance",
+                        "social",
+                        "health"
+                    ]
+                }
+            ],
+            "categorical_y": {
+                "not_recom": 0,
+                "priority": 1,
+                "recommend": 2,
+                "spec_prior": 3,
+                "very_recom": 4
+            },
+            "ml_task": "multiclass_classification",
+            "params": {
+                "columns_preprocessing": {
+                    "parents": [
+                        "categorical_to_onehot"
+                    ],
+                    "has_nurs": [
+                        "categorical_to_onehot"
+                    ],
+                    "form": [
+                        "categorical_to_onehot"
+                    ],
+                    "children": [
+                        "categorical_to_onehot"
+                    ],
+                    "housing": [
+                        "categorical_to_onehot"
+                    ],
+                    "finance": [
+                        "categorical_to_onehot"
+                    ],
+                    "social": [
+                        "categorical_to_onehot"
+                    ],
+                    "health": [
+                        "categorical_to_onehot"
+                    ]
+                },
+                "target_preprocessing": [
+                    "na_exclude",
+                    "categorical_to_int"
+                ],
+                "ml_task": "multiclass_classification"
+            }
+        }
+    ],
+    "learners": [
+        {
+            "library_version": "0.23.2",
+            "algorithm_name": "Decision Tree",
+            "algorithm_short_name": "Decision Tree",
+            "uid": "96c0dcac-5857-4056-a297-f19b21df4b1d",
+            "params": {
+                "model_type": "Decision Tree",
+                "ml_task": "multiclass_classification",
+                "seed": 1235,
+                "criterion": "gini",
+                "max_depth": 3,
+                "num_class": 5,
+                "explain_level": 0
+            }
+        },
+        {
+            "library_version": "0.23.2",
+            "algorithm_name": "Decision Tree",
+            "algorithm_short_name": "Decision Tree",
+            "uid": "55c2979d-c392-4239-bdaa-9b55139d2b69",
+            "params": {
+                "model_type": "Decision Tree",
+                "ml_task": "multiclass_classification",
+                "seed": 1235,
+                "criterion": "gini",
+                "max_depth": 3,
+                "num_class": 5,
+                "explain_level": 0
+            }
+        },
+        {
+            "library_version": "0.23.2",
+            "algorithm_name": "Decision Tree",
+            "algorithm_short_name": "Decision Tree",
+            "uid": "2fa8da66-b09f-4077-91e6-73142bf39c49",
+            "params": {
+                "model_type": "Decision Tree",
+                "ml_task": "multiclass_classification",
+                "seed": 1235,
+                "criterion": "gini",
+                "max_depth": 3,
+                "num_class": 5,
+                "explain_level": 0
+            }
+        },
+        {
+            "library_version": "0.23.2",
+            "algorithm_name": "Decision Tree",
+            "algorithm_short_name": "Decision Tree",
+            "uid": "6a2f31e2-f4b9-49ec-993d-8a749ce26713",
+            "params": {
+                "model_type": "Decision Tree",
+                "ml_task": "multiclass_classification",
+                "seed": 1235,
+                "criterion": "gini",
+                "max_depth": 3,
+                "num_class": 5,
+                "explain_level": 0
+            }
+        },
+        {
+            "library_version": "0.23.2",
+            "algorithm_name": "Decision Tree",
+            "algorithm_short_name": "Decision Tree",
+            "uid": "5b9a4b0e-06ce-47f2-84b2-5c3148e26c6a",
+            "params": {
+                "model_type": "Decision Tree",
+                "ml_task": "multiclass_classification",
+                "seed": 1235,
+                "criterion": "gini",
+                "max_depth": 3,
+                "num_class": 5,
+                "explain_level": 0
+            }
+        },
+        {
+            "library_version": "0.23.2",
+            "algorithm_name": "Decision Tree",
+            "algorithm_short_name": "Decision Tree",
+            "uid": "92c0895a-5d55-4b37-940d-47e32636e95d",
+            "params": {
+                "model_type": "Decision Tree",
+                "ml_task": "multiclass_classification",
+                "seed": 1235,
+                "criterion": "gini",
+                "max_depth": 3,
+                "num_class": 5,
+                "explain_level": 0
+            }
+        },
+        {
+            "library_version": "0.23.2",
+            "algorithm_name": "Decision Tree",
+            "algorithm_short_name": "Decision Tree",
+            "uid": "ba352eb8-abc8-4616-85f4-8e12d8728698",
+            "params": {
+                "model_type": "Decision Tree",
+                "ml_task": "multiclass_classification",
+                "seed": 1235,
+                "criterion": "gini",
+                "max_depth": 3,
+                "num_class": 5,
+                "explain_level": 0
+            }
+        },
+        {
+            "library_version": "0.23.2",
+            "algorithm_name": "Decision Tree",
+            "algorithm_short_name": "Decision Tree",
+            "uid": "cf4f0dfb-6ab9-48ec-9f3e-22b29d33cc5b",
+            "params": {
+                "model_type": "Decision Tree",
+                "ml_task": "multiclass_classification",
+                "seed": 1235,
+                "criterion": "gini",
+                "max_depth": 3,
+                "num_class": 5,
+                "explain_level": 0
+            }
+        },
+        {
+            "library_version": "0.23.2",
+            "algorithm_name": "Decision Tree",
+            "algorithm_short_name": "Decision Tree",
+            "uid": "9f3d5bee-a556-4cfe-9a14-1fa9061d87c6",
+            "params": {
+                "model_type": "Decision Tree",
+                "ml_task": "multiclass_classification",
+                "seed": 1235,
+                "criterion": "gini",
+                "max_depth": 3,
+                "num_class": 5,
+                "explain_level": 0
+            }
+        },
+        {
+            "library_version": "0.23.2",
+            "algorithm_name": "Decision Tree",
+            "algorithm_short_name": "Decision Tree",
+            "uid": "a1d9dce0-ea98-4612-a07c-ee3b8ae623ac",
+            "params": {
+                "model_type": "Decision Tree",
+                "ml_task": "multiclass_classification",
+                "seed": 1235,
+                "criterion": "gini",
+                "max_depth": 3,
+                "num_class": 5,
+                "explain_level": 0
+            }
+        }
+    ],
+    "params": {
+        "additional": {
+            "trees_in_step": 1,
+            "train_cant_improve_limit": 0,
+            "max_steps": 1,
+            "max_rows_limit": null,
+            "max_cols_limit": null
+        },
+        "preprocessing": {
+            "columns_preprocessing": {
+                "parents": [
+                    "categorical_to_onehot"
+                ],
+                "has_nurs": [
+                    "categorical_to_onehot"
+                ],
+                "form": [
+                    "categorical_to_onehot"
+                ],
+                "children": [
+                    "categorical_to_onehot"
+                ],
+                "housing": [
+                    "categorical_to_onehot"
+                ],
+                "finance": [
+                    "categorical_to_onehot"
+                ],
+                "social": [
+                    "categorical_to_onehot"
+                ],
+                "health": [
+                    "categorical_to_onehot"
+                ]
+            },
+            "target_preprocessing": [
+                "na_exclude",
+                "categorical_to_int"
+            ],
+            "ml_task": "multiclass_classification"
+        },
+        "validation_strategy": {
+            "validation_type": "kfold",
+            "shuffle": true,
+            "stratify": true,
+            "X_path": "AutoML_1/X.parquet",
+            "y_path": "AutoML_1/y.parquet",
+            "results_path": "AutoML_1",
+            "k_folds": 10
+        },
+        "learner": {
+            "model_type": "Decision Tree",
+            "ml_task": "multiclass_classification",
+            "seed": 1235,
+            "criterion": "gini",
+            "max_depth": 3,
+            "num_class": 5,
+            "explain_level": 0
+        },
+        "ml_task": "multiclass_classification",
+        "explain_level": 0,
+        "name": "1_DecisionTree",
+        "status": "initialized",
+        "final_loss": null,
+        "train_time": null
+    },
+    "saved": [
+        "AutoML_1/1_DecisionTree/learner_fold_0.decision_tree",
+        "AutoML_1/1_DecisionTree/learner_fold_1.decision_tree",
+        "AutoML_1/1_DecisionTree/learner_fold_2.decision_tree",
+        "AutoML_1/1_DecisionTree/learner_fold_3.decision_tree",
+        "AutoML_1/1_DecisionTree/learner_fold_4.decision_tree",
+        "AutoML_1/1_DecisionTree/learner_fold_5.decision_tree",
+        "AutoML_1/1_DecisionTree/learner_fold_6.decision_tree",
+        "AutoML_1/1_DecisionTree/learner_fold_7.decision_tree",
+        "AutoML_1/1_DecisionTree/learner_fold_8.decision_tree",
+        "AutoML_1/1_DecisionTree/learner_fold_9.decision_tree"
+    ],
+    "predictions_fname": "AutoML_1/1_DecisionTree/predictions_out_of_folds.csv",
+    "metric_name": "logloss",
+    "final_loss": 0.44955155347518755,
+    "train_time": 11.390897035598755,
+    "is_stacked": false
+}
