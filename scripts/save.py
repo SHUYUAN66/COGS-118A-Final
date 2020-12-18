@@ -1,29 +1,16 @@
 import os
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.svm import SVC
 from sklearn.pipeline import Pipeline
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.model_selection import train_test_split
+from sklearn.model_selection import GridSearchCV
 import joblib
-
 def check_directory(lst):
     for i in lst:
         CHECK_FOLDER = os.path.isdir(i)
         if not CHECK_FOLDER:
             os.makedirs(i)     
         else:
-            pass
-def got_pipeline(alg, pre_params_, preprocessor_):
-    alg_name = list(alg)[0]
-    clsf = alg[alg_name][0]
-    param = alg[alg_name][1]
-    params = pre_params_.append(param)
-    pipeline = Pipeline([
-        ('preprocessing', preprocessor_),
-        ('classifier', clsf)])
-    return pipeline, params
-
-def save_trails(pipeline_, params_, alg, scr, data, path=['all_models', 'best_models']):
+            return
+def save_trails(pre_params_, preprocessor_, alg, scr, data, path=['all_models/', 'best_models/']):
     """
     alg: Algorithm, a dict(), each one is a name of that function {'knn':[KNN(),knn_params]}
     scr: scorings, a dict(), each one is a function such as 'acc':ACC 
@@ -31,29 +18,38 @@ def save_trails(pipeline_, params_, alg, scr, data, path=['all_models', 'best_mo
     path = ['all_models','best_models'] , to decide first chart or second chart.
     """
     # parameters
+    params = pre_params_
     alg_name = list(alg)[0]
     data_name = list(data)[0]
-    
+    clsf = alg[alg_name][0]
+    param = alg[alg_name][1]
+    params.append(param)
+    print(params)
     dataset = data[data_name][0]
+    pipeline = Pipeline([
+        ('preprocessing', preprocessor_),
+        ('classifier', clsf)])
     X = dataset.drop(columns=['target'])
     y = dataset.target
     record={}
     for i in range(len(list(scr))):  
         score_name = list(scr)[i]
         score = scr[score_name]
-
+        print(score_name)
         trail_name = alg_name+data_name+score_name
         record[trail_name] =[]
         details = {}
         # 4000 : 1000
-        X_train, X_val, y_train, y_val=train_test_split(X, y, test_size=0.2)
-        clf = GridSearchCV(pipeline_, params_, scoring=score, cv=5, n_jobs=-1, return_train_score=True)
+        X_train, X_val, y_train, y_val=train_test_split(X, y, test_size=0.4)
+        clf = GridSearchCV(pipeline, params, scoring=score, cv=5, n_jobs=-1, return_train_score=True)
         clf.fit(X_train, y_train)
         # For each trialwe use 4000 cases to train thedi erent models,1000 casesto calibrate the models and select the best parameters,and then report performance on the large final test set.
-        save_models = os.path.join(path[0], alg_name, data_name, score_name)
-        check_directory(save_models)
+        save_models = os.path.join(path[0],alg_name, data_name, score_name)
+        check_directory([save_models])
         joblib.dump(clf, os.path.join(
             save_models, 'all_models.pkl'))
+        results = clf.cv_results_
+        print(results)
         mean_train_grade = clf.cv_results_['mean_test_score']
         best_score = clf.best_score_
         best_params = clf.best_params_
@@ -63,7 +59,7 @@ def save_trails(pipeline_, params_, alg, scr, data, path=['all_models', 'best_mo
         details['best_params'] = best_params
         save_best_model = os.path.join(
             path[1], alg_name, data_name, score_name)
-        check_directory(save_best_model)
+        check_directory([save_best_model])
         details['best_estimator'] = best_model
         joblib.dump(best_model, os.path.join(
             save_best_model, 'best_model.pkl'))

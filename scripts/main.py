@@ -1,8 +1,9 @@
 
 import sys
+from tkinter import NONE
 import numpy as np
 from sklearn.compose import make_column_selector as selector
-from sklearn.preprocessing import StandardScaler,  OneHotEncoder
+from sklearn.preprocessing import StandardScaler,  OneHotEncoder, OrdinalEncoder
 import seaborn as sns
 import pandas as pd
 from sklearn.compose import ColumnTransformer
@@ -39,10 +40,8 @@ gamma = np.arange(10**(-7), 10**3, 10)
     The kernel widths for locally weighted averaging vary from 20 to 210 times the minimum distance between any two points in the train set.
     """
 knn_params = {'classifier': [KNeighborsClassifier()],
-              'classifier__n_neighbors': np.random.randint(1,150, 26),
+              'classifier__n_neighbors': np.random.randint(1, 50, 10),
               'classifier__weights': ['uniform', 'distance'],
-              # eu, eu gain ratio
-              #'classifier__matrix': ['euclidean', 'seuclidean','manhattan'],
               'classifier__algorithm': ['brute']}
 #'classifier__leaf_size_int': np.random.randint(0, 50, 10)}
 svm_params = {'classifier': [SVC()],
@@ -51,7 +50,7 @@ svm_params = {'classifier': [SVC()],
               'classifier__kernel': ['rbf', 'linear'],
               'classifier__strategy': ['mean', 'median']}
 dtr_params = {'classifier': [DecisionTreeClassifier()],
-              'classifier__min_samples_split':  np.random.randint(1,150, 5),
+              'classifier__min_samples_split':  range(2, 403, 10),
               'classifier__criterion': ['gini', 'entropy'],
               'classifier__max_depth': [2, 4, 6, 8, 10, 12, 'auto', 'sqrt', 'log2'],
               'classifier__strategy': ['mean', 'median']}
@@ -62,14 +61,23 @@ categorical_transformer = Pipeline(
     steps=[('miss', SimpleImputer(strategy='constant', fill_value='missing')),
            ('encode', OneHotEncoder(handle_unknown='ignore'))
            ])
+ordinal_transformer = Pipeline(
+    steps=[('miss', SimpleImputer(strategy='constant', fill_value='missing')),
+           ('encode', OrdinalEncoder())
+           ])
 numeric_transformer = Pipeline(
     steps=[('miss', SimpleImputer()),  ('scaler', StandardScaler())
            ])
 # combine
 preprocessor = ColumnTransformer(transformers=[('categoricals', categorical_transformer,
-                                                selector(dtype_include="object")),
+                                                selector(dtype_include=["object","category"])),
                                                ('numericals', numeric_transformer, selector(
-                                                   dtype_exclude="object"))
+                                                   dtype_include=["int",'float']))
+                                               ])
+preprocessor_ordinal = ColumnTransformer(transformers=[('categoricals', ordinal_transformer,
+                                                selector(dtype_include=["object", "category"])),
+                                               ('numericals', numeric_transformer, selector(
+                                                   dtype_include=["int", 'float']))
                                                ])
 prep = [
     {'preprocessing__categoricals': [categorical_transformer],
@@ -77,12 +85,24 @@ prep = [
     {'preprocessing__numericals': [numeric_transformer],
      'preprocessing__numericals__miss__strategy': ['mean', 'median', 'most_frequent']}
 ]
+prep_ord = [
+    {'preprocessing__categoricals': [ordinal_transformer],
+     'preprocessing__categoricals__miss__strategy': ['most_frequent']},
+    {'preprocessing__numericals': [numeric_transformer],
+     'preprocessing__numericals__miss__strategy': ['mean', 'median', 'most_frequent']}
+]
+prep_org = [
+    {'preprocessing__categoricals': [ordinal_transformer],
+     'preprocessing__categoricals__miss__strategy': ['most_frequent']},
+    {'preprocessing__numericals': [numeric_transformer],
+     'preprocessing__numericals__miss__strategy': ['mean', 'median', 'most_frequent']}
+]
 ACC = make_scorer(accuracy_score)
-PRC = make_scorer(precision_score)
-FSC = make_scorer(f1_score)
-LFT = make_scorer(recall_score)
+PRC = make_scorer(precision_score, average ='micro' )
+FSC = make_scorer(f1_score, average='macro')
+LFT = make_scorer(recall_score, average='macro')
 ROC = make_scorer(roc_auc_score)
-APR = make_scorer(average_precision_score)
+APR = make_scorer(average_precision_score, average='macro')
 RMS = make_scorer(mean_squared_error)
 MXE = make_scorer(log_loss)
 
@@ -114,7 +134,10 @@ avl_info={"avl":[avl_train,avl_test]}
 adult_info ={'adult':[ad_train, ad_test]}
 nsr_info ={'nursery':[nsr_train, nsr_test]}
 
-pipeline, spacing = got_pipeline(knn_info, prep, preprocessor)
-
-save_trails(pipeline, spacing, knn_info, scores_info, nsr_info)
-
+# save_trails(pre_params_, preprocessor_, alg, scr, data)
+save_trails(prep_org, preprocessor_ordinal, knn_info, scores_info, nsr_info)
+print('finish knn')
+save_trails(prep_org, preprocessor_ordinal, svm_info, scores_info, nsr_info)
+print('finish svm')
+save_trails(prep_org, preprocessor_ordinal, dtree_info, scores_info, nsr_info)
+print('finished dtree' )

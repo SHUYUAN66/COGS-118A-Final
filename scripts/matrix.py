@@ -69,6 +69,7 @@ def select_trails(alg, scr, data, path=['all_models', 'best_models']):
     # - avl
     # svm
     # ...
+    os.path.join ()
     
 
     for i in alg:
