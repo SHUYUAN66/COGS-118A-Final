@@ -1,9 +1,10 @@
-import glob
+
 import os
-from os.path import dirname, basename, isfile, join
+import os.path
 import pandas as pd
 from sklearn.metrics import make_scorer, f1_score, accuracy_score, mean_squared_error, average_precision_score, roc_auc_score, log_loss, recall_score, precision_score
 import joblib
+from sklearn.model_selection import train_test_split
 record = {}
 # measure model performance on the test set (all the data in thedataset other than the 5000 random samples
 # for each dataset, generate all scores of "score"
@@ -21,9 +22,7 @@ ad_train = pd.read_csv('data/train/adult.csv')
 nsr_train = pd.read_csv('data/train/nsr.csv')
 avl_train = pd.read_csv('data/train/avl.csv')
 
-ad_test = pd.read_csv('data/test/adult.csv')
-nsr_test = pd.read_csv('data/test/nsr.csv')
-avl_test = pd.read_csv('data/test/avl.csv')
+
 """
 for every algorithms (knn/svm/dtree)
 there are there three datasets and many scores evaluating them.
@@ -32,13 +31,7 @@ mean[ad-svm-acc,nsr_svm_acc, avl_svm_acc] (1,1)
 mean[ad-knn-acc,nsr_svm_acc,avl_nsr_acc] (2,1)
 mean[ad-dtree-acc,nsr_dtree_acc,avl_dtree_acc](2,1)
 """
-# one test set: 
-# knn (ACC, APR, .....)
-# - ad
-# - nsr
-# - avl 
-# svm
-# ...
+
 ACC = make_scorer(accuracy_score)
 PRC = make_scorer(precision_score)
 FSC = make_scorer(f1_score)
@@ -47,34 +40,51 @@ ROC = make_scorer(roc_auc_score)
 APR = make_scorer(average_precision_score)
 RMS = make_scorer(mean_squared_error)
 MXE = make_scorer(log_loss)
+# score 
+scorings = [ACC, PRC, FSC, LFT, ROC, APR, RMS, MXE]
+name = ['ACC', 'FSC', 'LFT', 'ROC', 'APR', 'BEP', 'RMS', 'MXE']
+# score name score.get_key() 
+score_dict={}
+for i in range(len(name)):
+    score_dict[name[i]] = scorings[i]
+# algorithm
 
 
-path = 'models'
-def collect(dire,test,path):
+def select_trails(alg, scr, data, path=['all_models', 'best_models']):
+    """
+    alg: Algorithm, a list of names}
+    scr: scorings, a dict(), each one is a function such as 'acc':ACC 
+    data: a dict() of dataset 
+    path = ['all_models','best_models'] , to decide first chart or second chart.
+    """
+    data_name = list(data)[0]
+    dataset = data[data_name][0]
+    X_test = dataset.drop(columns=['target'])
+    y_test = dataset.target
+    # first table: only use one setting of hyperparameters! no need to do gredsearch
+    # one alg(knn)-3 dataset
+    # knn (ACC, APR, .....)
+    # - ad
+    # - nsr
+    # - avl
+    # svm
+    # ...
+    
 
-    scorings = [ACC, PRC, FSC, LFT, ROC, APR, RMS, MXE]
-    name = ['ACC', 'FSC', 'LFT', 'ROC', 'APR', 'BEP', 'RMS', 'MXE']
-    y_true = 0
-    for i in range(len(name)):
-        name = name[i]
-        exc = scorings[i]
-        model_name = os.path.join(path,name+"_all.pkl")
-        model = joblib.load(model_name)
-        dire[name] = model
-        x_test = test.drop(columns=['target'])  # df.drop(columns=['target'])
-        y_true = test.target
-        #dire[name+"_score"] = model.scorer_['mean_test_score']
-        print('pred', model.predict(x_test))
-        y_true = list(y_true)
-        pred = model.predict(x_test)
-        dire[name+"_test_score"] = exc(y_true,pred )
-        
-    print(dire)
-    return dire
+    for i in alg:
+        score_name = scr.get_key()
+        data_name = data.get_key()
+        df['algorithm'] = df
+        df['scoring'] = scr_name
+        df['dataset'] = data_name
+        model = os.path.join(path, alg, scr_name, data_name)
+        models.append(model)
+        pred_y = model.predict(X_test)
+        get = scr(y_test, pred_y)
+        df['performance']=get
+    return df
 
-
-test = pd.read_csv('data/test/adult.csv')
-knn={}
-collect(knn, test, path='models/knn')
+    
+    
 
 

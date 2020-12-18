@@ -1,7 +1,5 @@
 
 import sys
-sys.path.insert(
-    0, '../packages')
 import numpy as np
 from sklearn.compose import make_column_selector as selector
 from sklearn.preprocessing import StandardScaler,  OneHotEncoder
@@ -14,15 +12,10 @@ from sklearn.svm import SVC
 from sklearn.pipeline import Pipeline
 from sklearn.neighbors import KNeighborsClassifier
 sys.path.insert(0, '/scripts')
-from pipe_score import *
+from save import *
 # Basic
 from sklearn.metrics import  make_scorer, f1_score, accuracy_score, mean_squared_error, average_precision_score, roc_auc_score, log_loss, recall_score,precision_score
-# Time evaluation:
 
-# preprocessing
-# StandardScaler(), KFold()
-# selecting model
-# Algorithms
 """
 * The DataFrame: 
     group1: ACC, FSC, LFT
@@ -73,7 +66,6 @@ numeric_transformer = Pipeline(
     steps=[('miss', SimpleImputer()),  ('scaler', StandardScaler())
            ])
 # combine
-
 preprocessor = ColumnTransformer(transformers=[('categoricals', categorical_transformer,
                                                 selector(dtype_include="object")),
                                                ('numericals', numeric_transformer, selector(
@@ -85,24 +77,6 @@ prep = [
     {'preprocessing__numericals': [numeric_transformer],
      'preprocessing__numericals__miss__strategy': ['mean', 'median', 'most_frequent']}
 ]
-record = {}
-# measure model performance on the test set (all the data in thedataset other than the 5000 random samples
-# for each dataset, generate all scores of "score"
-# need to record as test_scores = {adult:{svc:[], knn:[],dtree:[]}, nursery: {svc:[], knn:[],dtree:[]}, power: {svc:[], knn:[],dtree:[]}
-scores_test_alg = {}
-# mean​ training​ set performance for the optimal hyperparameters
-# a good hyper, then use these params to train and got scores
-# this would be only using hyperparams model:
-# record as model:{param:[],pipeline:[] {'adult:{test = [], train = []}, nursery:{test = [], train = []}...}
-scores_train_data = {}
-# a discussion of thedifference between each algorithms’ training and test set performance
-# continue on usinf the same good params, see the test scores
-scores_test_data = {}
-def bep(p,r):
-    if p==r:
-        return p
-# scores
-
 ACC = make_scorer(accuracy_score)
 PRC = make_scorer(precision_score)
 FSC = make_scorer(f1_score)
@@ -111,38 +85,36 @@ ROC = make_scorer(roc_auc_score)
 APR = make_scorer(average_precision_score)
 RMS = make_scorer(mean_squared_error)
 MXE = make_scorer(log_loss)
+
 scorings = [ACC, PRC, FSC, LFT, ROC, APR, RMS, MXE]
 name = ['ACC', 'PRC','FSC', 'LFT', 'ROC', 'APR', 'RMS', 'MXE']
 ad_train = pd.read_csv('data/train/adult.csv')
 nsr_train = pd.read_csv('data/train/nsr.csv')
 avl_train = pd.read_csv('data/train/avl.csv')
-path1 = 'models/all_models/adults/'
-path2 = 'models/all_models/nsr/'
-path3 = 'models/all_models/avl/'
-# make_score_sf(scorings_, df, classifier_, prep_, preprocessor_, train_params)
+ad_test = pd.read_csv('data/test/adult.csv')
+nsr_test = pd.read_csv('data/test/nsr.csv')
+avl_test = pd.read_csv('data/test/avl.csv')
 
-file_name = 'records/model_info.txt'
-print('Here record the Model informations.')
+scores_info = {'ACC':ACC,
+               'PRC':PRC,
+               'FSC':FSC,
+               'LFT':LFT,
+               'ROC':ROC,
+               'APR':APR,
+               'RMS':RMS,
+               'MXE':MXE}
+# TODO!
+more_scores = {'MEAN':'bb',
+              'OPT-SEL':'aa'}
 
-with open(file_name, 'w') as f:
-       #pipe_score(scorings, ad_train, 'knn', prep,
-              #preprocessor, knn_params,  path1)
-       #pipe_score(scorings, ad_train, 'svm', prep,
-           #preprocessor, knn_params,  path1)
-       #pipe_score(scorings, ad_train, 'dtree', prep,
-           #preprocessor, knn_params,  path1)
+knn_info={'knn':[KNeighborsClassifier(),knn_params]}
+svm_info={'svm':[SVC(),svm_params]}
+dtree_info={'dtree':[DecisionTreeClassifier(),dtr_params]}
+avl_info={"avl":[avl_train,avl_test]}
+adult_info ={'adult':[ad_train, ad_test]}
+nsr_info ={'nursery':[nsr_train, nsr_test]}
 
-       pipe_score(scorings, nsr_train, 'knn', prep,
-           preprocessor, knn_params,  path2)
-       pipe_score(scorings, nsr_train, 'svm', prep,
-           preprocessor, knn_params,  path2)
-       pipe_score(scorings, nsr_train, 'dtree', prep,
-           preprocessor, knn_params,  path2)
+pipeline, spacing = got_pipeline(knn_info, prep, preprocessor)
 
-       pipe_score(scorings, avl_train, 'svm', prep,
-           preprocessor, knn_params, path3)
-       pipe_score(scorings, avl_train, 'knn', prep,
-           preprocessor, knn_params,  path3)
-       pipe_score(scorings, avl_train, 'dtree', prep,
-           preprocessor, knn_params, path3)
-       print('Here are my trails', file=f)
+save_trails(pipeline, spacing, knn_info, scores_info, nsr_info)
+
