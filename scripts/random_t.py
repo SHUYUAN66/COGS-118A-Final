@@ -89,7 +89,7 @@ def random_nsr(n=5000):
     nsr_raw = pd.read_csv('./data/raw/nursey/nursery.data', header=None)
     cleaning_nsr = clean_nsr(nsr_raw)
     cleaning_nsr['target'] = cleaning_nsr['target'].replace(
-        ['notrecom', 'recommend', 'veryrecom', 'priority', 'specprior'], [0, 0, 2, 3, 4])
+        ['notrecom', 'recommend', 'veryrecom', 'priority', 'specprior'], [0, 1, 2, 3, 4])
     nsr_train = cleaning_nsr.sample(n=n, replace=False)
     nsr_test = cleaning_nsr.drop(nsr_train.index)
     nsr_train.to_csv('./data/train/nsr.csv', index=False)

@@ -5,6 +5,11 @@ from sklearn.model_selection import GridSearchCV
 import joblib
 from sklearn.preprocessing import LabelBinarizer
 
+# TODO: tried on both ordinal encoder and onhotencoder [could be combined later]
+# TODO: More preprocessing options.
+# TODO: auto - Data cleaning model [might only auto these three datasets. but maybe others have already wrote some package?]
+# TODO: Final goal: why not combine classifier as part of this evaludation model?
+
 def check_directory(lst):
     for i in lst:
         CHECK_FOLDER = os.path.isdir(i)
@@ -51,7 +56,7 @@ def save_trails(pre_params_, preprocessor_, alg, scr, data, path=['all_models/',
         # print(y_val.unique())
         clf = GridSearchCV(pipeline, params, scoring=score,
                            cv=5, n_jobs=-1, return_train_score=True, verbose=True)
-        # For each trialwe use 4000 cases to train thedi erent models,1000 casesto calibrate the models and select the best parameters,and then report performance on the large final test set.
+        # "For each trialwe use 4000 cases to train thedi erent models,1000 casesto calibrate the models and select the best parameters,and then report performance on the large final test set."
         clf.fit(X_train, y_train)
         save_models = os.path.join(path[0],alg_name, data_name, score_name)
         check_directory([save_models])

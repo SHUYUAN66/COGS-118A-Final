@@ -14,7 +14,9 @@ from sklearn.svm import SVC
 from sklearn.pipeline import Pipeline
 from sklearn.neighbors import KNeighborsClassifier
 sys.path.insert(0, '/scripts')
+# Model
 from save import *
+# for randomly choosing datasets with different sizes (default n=5000)
 from random_t import *
 
 # Basic
@@ -53,7 +55,7 @@ svm_params = {'classifier': [SVC()],
 dtr_params = {'classifier': [DecisionTreeClassifier()],
               'classifier__min_samples_split':  [4,7,9],
               'classifier__criterion': ['gini', 'entropy'],
-              'classifier__max_depth': [ 4, 6, 8,  10]
+              'classifier__max_depth': [ 4, 6, 8, 10]
               }
 
 # 'most_frequent' or 'constant'
@@ -155,6 +157,5 @@ save_trails(prep, preprocessor, dtree_info, scores_info, avl_info)
 #save_trails(prep, preprocessor, dtree_info, scores_info, adult_info)
 #nsr_dtree=save_trails(prep, preprocessor, dtree_info, scores_info, nsr_info)
 print('finished dtree' )
-
 # best : avl-svm avl -dtree avl-knn adult-svm
 # all:  avl-svm avl- dtree  avl-knn adult-svm 
