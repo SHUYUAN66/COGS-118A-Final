@@ -94,11 +94,8 @@ replicate  a part of the analysis done in the paper by Caruana & Niculescu-Mizil
     - SVMS
     - KNN
     - Decision Tress
-        - Decision tree is a simple but powerful learning technique
-that is considered as one of the famous learning algorithms that have
-been successfully used in practice for various classification tasks. They
-have the advantage of producing a comprehensible classification model
-with satisfactory accuracy levels in several application domains. 
+    
+        Decision tree is a simple but powerful learning technique that is considered as one of the famous learning algorithms that have been successfully used in practice for various classification tasks. They have the advantage of producing a comprehensible classification model with satisfactory accuracy levels in several application domains. 
 
 
 **FOR EXTRA CREDIT (fancy things)**

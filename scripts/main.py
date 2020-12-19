@@ -2,7 +2,6 @@
 
 import functools
 import sys
-
 import numpy as np
 from sklearn.compose import make_column_selector as selector
 from sklearn.preprocessing import LabelBinarizer, StandardScaler,  OneHotEncoder, OrdinalEncoder
@@ -32,10 +31,9 @@ refer: https://www.kaggle.com/kevinarvai/fine-tuning-a-classifier-in-scikit-lear
     
 """
    #C = 0.001,0.005,0.01,0.05,0.1,0.5,1,2
-C = [1*(10**-5), 1*(10**-4), 1*(10**-3), 0.005, 0.001, 0.01, 0.05, 0.5,
-     1, 2, 10, 1*(10**2), 1*(10**3), 1*(10**4), 1*(10**5)]
+C = [0.005, 0.001, 0.01, 0.05, 0.5,1, 2 ]
 #factors of ten from 10-7 to 103
-gamma = np.arange(10**(-7), 10**3, 10)
+gamma = [10**(-5), 10, 1, 0, 0.01]
 
 """
     The kernel widths for locally weighted averaging vary from 20 to 210 times the minimum distance between any two points in the train set.
@@ -51,10 +49,10 @@ svm_params = {'classifier': [SVC()],
               'classifier__kernel': ['rbf', 'poly'],
               }
 dtr_params = {'classifier': [DecisionTreeClassifier()],
-              'classifier__min_samples_split':  range(2, 403, 10),
+              'classifier__min_samples_split':  [4,7,9],
               'classifier__criterion': ['gini', 'entropy'],
-              'classifier__max_depth': [2, 4, 6, 8, 10, 12, 'auto', 'sqrt', 'log2'],
-              'classifier__strategy': ['mean', 'median']}
+              'classifier__max_depth': [ 4, 6, 8,  10]
+              }
 
 # 'most_frequent' or 'constant'
 # 2. encode and standarzation
@@ -92,8 +90,8 @@ prep_ord = [
     {'preprocessing__numericals': [numeric_transformer],
      'preprocessing__numericals__miss__strategy': ['mean', 'median', 'most_frequent']}
 ]
-prep_org = [
-    {'preprocessing__categoricals': [ordinal_transformer],
+prep_cat = [
+    {'preprocessing__categoricals': [categorical_transformer],
      'preprocessing__categoricals__miss__strategy': ['most_frequent']},
     {'preprocessing__numericals': [numeric_transformer],
      'preprocessing__numericals__miss__strategy': ['mean', 'median', 'most_frequent']}
@@ -106,13 +104,15 @@ def multiclass_roc_auc_score(y_test, y_pred, average="macro"):
     y_pred = lb.transform(y_pred)
     return roc_auc_score(y_test, y_pred, average=average)
 
-
 ROC = make_scorer(multiclass_roc_auc_score)
 ACC = make_scorer(accuracy_score)
 PRC = make_scorer(precision_score, average ='micro' )
+PRC_2 = make_scorer(precision_score, average='macro')
 FSC = make_scorer(f1_score, average='macro')
 LFT = make_scorer(recall_score, average='macro')
-APR = make_scorer(average_precision_score, average='macro')
+LFT_2 = make_scorer(recall_score, average='micro')
+APR = make_scorer(average_precision_score,average='micro')
+APR_2 = make_scorer(average_precision_score, average='macro')
 RMS = make_scorer(mean_squared_error)
 MXE = make_scorer(log_loss)
 
@@ -130,7 +130,7 @@ scores_info = {"ROC": ROC,
                'RMS': RMS,
                'MXE': MXE,
                'ACC': ACC,
-               'PRC':PRC,
+               'PRC': PRC,
                'FSC': FSC,
                'LFT': LFT,
                }
@@ -141,17 +141,20 @@ more_scores = {
 
 knn_info={'knn':[KNeighborsClassifier(),knn_params]}
 svm_info = {'svm': [SVC(), svm_params]}
-dtree_info={'dtree':[DecisionTreeClassifier(),dtr_params]}
+dtree_info={'dtree':[DecisionTreeClassifier(), dtr_params]}
 avl_info={"avl":[avl_train,avl_test]}
 adult_info ={'adult':[ad_train, ad_test]}
 nsr_info ={'nursery':[nsr_train, nsr_test]}
 
 # save_trails(pre_params_, preprocessor_, alg, scr, data)
-#nsr_knn=save_trails(prep_org, preprocessor, knn_info, scores_info, nsr_info)
+#nsr_knn=save_trails(prep, preprocessor, knn_info, scores_info, nsr_info)
+#adult_knn = save_trails(prep, preprocessor, knn_info, scores_info, adult_info)
 print('finish knn')
 print('start_svm')
-nsr_svm=save_trails(prep_org, preprocessor, svm_info, scores_info, nsr_info)
+#nsr_svm=save_trails(prep, preprocessor, svm_info, scores_info, nsr_info)
+#save_trails(prep, preprocessor, svm_info, scores_info, adult_info)
 print('finish svm')
 print('start dtree')
-nsr_dtree=save_trails(prep_org, preprocessor, dtree_info, scores_info, nsr_info)
+save_trails(prep, preprocessor, dtree_info, scores_info, adult_info)
+#nsr_dtree=save_trails(prep, preprocessor, dtree_info, scores_info, nsr_info)
 print('finished dtree' )
