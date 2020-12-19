@@ -39,7 +39,7 @@ def save_trails(pre_params_, preprocessor_, alg, scr, data, path=['all_models/',
         ('classifier', clsf)])
     X = dataset.drop(columns=['target']) 
     y = dataset.target
-    # run when multi-classes!
+    #run when multi-classes!
     lb = LabelBinarizer().fit(y)
     y = lb.transform(y)
     record={}
@@ -51,8 +51,8 @@ def save_trails(pre_params_, preprocessor_, alg, scr, data, path=['all_models/',
         record[trail_name] =[]
         details = {}
         X_train, X_val, y_train, y_val = train_test_split(
-            X, y, test_size=0.5,random_state=13)
-        #print(y_train.unique())
+            X, y, test_size=0.2)
+        # print(y_train.unique())
         # print(y_val.unique())
         clf = GridSearchCV(pipeline, params, scoring=score,
                            cv=5, n_jobs=-1, return_train_score=True, verbose=True)

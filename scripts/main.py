@@ -95,7 +95,9 @@ prep_ord = [
      'preprocessing__numericals__miss__strategy': ['mean', 'median', 'most_frequent']}
 ]
 #multiclass_roc_auc = functools.partial(roc_auc_score, average=np.average)
-def multiclass_roc_auc_score(y_test, y_pred, average="macro"):
+
+
+def multiclass_roc_auc_score(y_test, y_pred, average='micro'):
     lb = LabelBinarizer()
     lb.fit(y_test)
     y_test = lb.transform(y_test)
@@ -107,6 +109,7 @@ ACC = make_scorer(accuracy_score)
 PRC = make_scorer(precision_score, average ='micro' )
 PRC_2 = make_scorer(precision_score, average='macro')
 FSC = make_scorer(f1_score, average='macro')
+FSC_2 = make_scorer(f1_score, average='micro')
 LFT = make_scorer(recall_score, average='macro')
 LFT_2 = make_scorer(recall_score, average='micro')
 APR = make_scorer(average_precision_score,average='micro')
@@ -123,8 +126,8 @@ scores_info = {"ROC": ROC,
                'MXE': MXE,
                'ACC': ACC,
                'PRC': PRC,
-               'FSC': FSC,
-               'LFT': LFT,
+               'FSC': FSC_2,
+               'LFT': LFT_2,
                }
 # TODO!
 more_scores = {
