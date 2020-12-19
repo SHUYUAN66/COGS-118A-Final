@@ -115,7 +115,7 @@ MXE = make_scorer(log_loss)
 scorings = [ACC, PRC, FSC, LFT, ROC, APR, RMS, MXE]
 name = ['ACC', 'PRC','FSC', 'LFT', 'ROC', 'APR', 'RMS', 'MXE']
 
-scores_info = {#"ROC": ROC,
+scores_info = {"ROC": ROC,
                'APR': APR,
                'RMS': RMS,
                'MXE': MXE,
@@ -143,11 +143,11 @@ nsr_info = {'nursery': random_nsr()}
 print('start knn')
 # nsr_knn=save_trails(prep, preprocessor, knn_info, scores_info, nsr_info)
 # adult_knn = save_trails(prep, preprocessor, knn_info, scores_info, adult_info)
-avl_knn = save_trails(prep, preprocessor, knn_info, scores_info, avl_info)
+#avl_knn = save_trails(prep, preprocessor, knn_info, scores_info, avl_info)
 print('finish knn')
 print('start_svm')
 #nsr_svm=save_trails(prep, preprocessor, svm_info, scores_info, nsr_info)
-save_trails(prep, preprocessor, svm_info, scores_info, adult_info)
+#save_trails(prep, preprocessor, svm_info, scores_info, adult_info)
 #avl_svm = save_trails(prep, preprocessor, svm_info, scores_info, avl_info)
 print('finish svm')
 print('start dtree')
