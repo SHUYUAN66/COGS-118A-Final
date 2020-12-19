@@ -1,143 +1,21 @@
-from matplotlib import pyplot as plt
-import numpy as np
-from sklearn.cluster import SpectralClustering, SpectralCoclustering
-from sklearn.datasets import make_hastie_10_2
-from sklearn.model_selection import GridSearchCV
-from sklearn.metrics import make_scorer
-from sklearn.metrics import accuracy_score
-from sklearn.tree import DecisionTreeClassifier
-import pandas as pd 
-from sklearn.compose import make_column_selector as selector
-from sklearn.preprocessing import StandardScaler,  OneHotEncoder, OrdinalEncoder
-import seaborn as sns
+
 import pandas as pd
-from sklearn.compose import ColumnTransformer
-from sklearn.impute import SimpleImputer
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.svm import SVC
-from sklearn.pipeline import Pipeline
-from sklearn.neighbors import KNeighborsClassifier
-print(__doc__)
-nsr_train = pd.read_csv('data/train/nsr.csv')
-ordinal_transformer = Pipeline(
-    steps=[('miss', SimpleImputer(strategy='constant', fill_value='missing')),
-           ('encode', OrdinalEncoder())
-           ])
+import numpy as np
+sys.path.insert(0, '/scripts')
+from random_t import *
+from save import *
+# Dataset information 
+# eg: {'avl': [avl_train, avl_test]}
+avl_info = {"avl": random_avl()}
+adult_info = {'adult': random_adult()}
+nsr_info = {'nursery': random_nsr()}
+knn_info = {'knn': [KNeighborsClassifier(), knn_params]}
+svm_info = {'svm': [SVC(), svm_params]}
+dtree_info = {'dtree': [DecisionTreeClassifier(), dtr_params]}
 
-categorical_transformer = Pipeline(
-    steps=[('miss', SimpleImputer(strategy='constant', fill_value='missing')),
-           ('encode', OneHotEncoder(handle_unknown='ignore'))
-           ])
-ordinal_transformer = Pipeline(
-    steps=[('miss', SimpleImputer(strategy='constant', fill_value='missing')),
-           ('encode', OrdinalEncoder())
-           ])
-numeric_transformer = Pipeline(
-    steps=[('miss', SimpleImputer()),  ('scaler', StandardScaler())
-           ])
-spacing = [
-    {'preprocessing__categoricals': [ordinal_transformer],
-     'preprocessing__categoricals__miss__strategy': ['most_frequent']},
-    {'preprocessing__numericals': [numeric_transformer],
-     'preprocessing__numericals__miss__strategy': ['mean', 'median', 'most_frequent']},
-    {'classifier': [DecisionTreeClassifier(random_state=42)],
-     'classifier__min_samples_split':  range(2, 403, 10),
-     'classifier__criterion': ['gini', 'entropy'],
-     }
-]
-preprocessor_ordinal = ColumnTransformer(transformers=[('categoricals', ordinal_transformer,
-                                                        selector(dtype_include=["object", "category"])),
-                                                       ('numericals', numeric_transformer, selector(
-                                                           dtype_include=["int", 'float']))
-                                                       ])
-pipeline = Pipeline([
-    ('preprocessing', preprocessor_ordinal),
-    ('classifier', DecisionTreeClassifier())])
+# based on different hyperparams | different train set (change n)
+# only choose the best 
 
-X = nsr_train.drop(columns=['target'])
-y= nsr_train.target
-# The scorers can be either be one of the predefined metric strings or a scorer
-# callable, like the one returned by make_scorer
-scoring = {'AUC': 'roc_auc', 'Accuracy': make_scorer(accuracy_score)}
+def compare_test(alg_info, data_info):
 
-# Setting refit='AUC', refits an estimator on the whole dataset with the
-# parameter setting that has the best cross-validated AUC score.
-# That estimator is made available at ``gs.best_estimator_`` along with
-# parameters like ``gs.best_score_``, ``gs.best_params_`` and
-# ``gs.best_index_``
-gs = GridSearchCV(pipeline,
-                  spacing ,
-                  scoring=make_scorer(accuracy_score), cv=2, refit='AUC', return_train_score=True)
-gs.fit(X, y)
-results = gs.cv_results_
-print(results)
-plt.figure(figsize=(10, 10))
-plt.title("GridSearchCV evaluating using multiple scorers simultaneously",
-          fontsize=16)
 
-plt.xlabel("min_samples_split")
-plt.ylabel("Score")
-
-ax = plt.gca()
-ax.set_xlim(0, 402)
-ax.set_ylim(0.73, 1)
-print(list(results))
-'''
-['mean_fit_time', 'std_fit_time', 'mean_score_time', 'std_score_time', 'param_preprocessing__categoricals', 'param_preprocessing__categoricals__miss__strategy', 'param_preprocessing__numericals', 'param_preprocessing__numericals__miss__strategy', 'param_classifier', 'param_classifier__criterion', 'param_classifier__min_samples_split', 'params', 'split0_test_score', 'split1_test_score', 'mean_test_score', 'std_test_score', 'rank_test_score', 'split0_train_score', 'split1_train_score', 'mean_train_score', 'std_train_score']
-'''
-# Get the regular numpy array from the MaskedArray
-X, y = make_hastie_10_2(n_samples=8000, random_state=42)
-
-# The scorers can be either be one of the predefined metric strings or a scorer
-# callable, like the one returned by make_scorer
-scoring = {'AUC': 'roc_auc', 'Accuracy': make_scorer(accuracy_score)}
-
-# Setting refit='AUC', refits an estimator on the whole dataset with the
-# parameter setting that has the best cross-validated AUC score.
-# That estimator is made available at ``gs.best_estimator_`` along with
-# parameters like ``gs.best_score_``, ``gs.best_params_`` and
-# ``gs.best_index_``
-gs = GridSearchCV(DecisionTreeClassifier(random_state=42),
-                  param_grid={'min_samples_split': range(2, 403, 10)},
-                  scoring=scoring, refit='AUC', return_train_score=True)
-gs.fit(X, y)
-results = gs.cv_results_
-plt.figure(figsize=(9, 9))
-plt.title("GridSearchCV evaluating using multiple scorers simultaneously",
-          fontsize=16)
-print(results)
-plt.xlabel("min_samples_split")
-plt.ylabel("Score")
-print(list(results))
-ax = plt.gca()
-ax.set_xlim(0, 402)
-ax.set_ylim(0.73, 1)
-
-# Get the regular numpy array from the MaskedArray
-X_axis = np.array(results['param_min_samples_split'].data, dtype=float)
-
-for scorer, color in zip(sorted(scoring), ['g', 'k']):
-    for sample, style in (('train', '--'), ('test', '-')):
-        sample_score_mean = results['mean_%s_%s' % (sample, scorer)]
-        sample_score_std = results['std_%s_%s' % (sample, scorer)]
-        ax.fill_between(X_axis, sample_score_mean - sample_score_std,
-                        sample_score_mean + sample_score_std,
-                        alpha=0.1 if sample == 'test' else 0, color=color)
-        ax.plot(X_axis, sample_score_mean, style, color=color,
-                alpha=1 if sample == 'test' else 0.7,
-                label="%s (%s)" % (scorer, sample))
-
-    best_index = np.nonzero(results['rank_test_%s' % scorer] == 1)[0][0]
-    best_score = results['mean_test_%s' % scorer][best_index]
-
-    # Plot a dotted vertical line at the best score for that scorer marked by x
-    ax.plot([X_axis[best_index], ] * 2, [0, best_score],
-            linestyle='-.', color=color, marker='x', markeredgewidth=3, ms=8)
-
-    # Annotate the best score for that scorer
-    ax.annotate("%0.2f" % best_score,
-                (X_axis[best_index], best_score + 0.005))
-
-plt.legend(loc="best")
-plt.grid(False)
-plt.show()

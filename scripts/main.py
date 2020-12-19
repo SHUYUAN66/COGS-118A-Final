@@ -15,6 +15,8 @@ from sklearn.pipeline import Pipeline
 from sklearn.neighbors import KNeighborsClassifier
 sys.path.insert(0, '/scripts')
 from save import *
+from random_t import *
+
 # Basic
 from sklearn.metrics import  make_scorer, f1_score, accuracy_score, mean_squared_error, average_precision_score, roc_auc_score, log_loss, recall_score,precision_score
 """
@@ -31,9 +33,9 @@ refer: https://www.kaggle.com/kevinarvai/fine-tuning-a-classifier-in-scikit-lear
     
 """
    #C = 0.001,0.005,0.01,0.05,0.1,0.5,1,2
-C = [0.005, 0.001, 0.01, 0.05, 0.5,1, 2 ]
+C = [ 0.01, 0.5,1, 2 ]
 #factors of ten from 10-7 to 103
-gamma = [10**(-5), 10, 1, 0, 0.01]
+gamma = [1**(-2), 1, 0, 0.01]
 
 """
     The kernel widths for locally weighted averaging vary from 20 to 210 times the minimum distance between any two points in the train set.
@@ -90,12 +92,6 @@ prep_ord = [
     {'preprocessing__numericals': [numeric_transformer],
      'preprocessing__numericals__miss__strategy': ['mean', 'median', 'most_frequent']}
 ]
-prep_cat = [
-    {'preprocessing__categoricals': [categorical_transformer],
-     'preprocessing__categoricals__miss__strategy': ['most_frequent']},
-    {'preprocessing__numericals': [numeric_transformer],
-     'preprocessing__numericals__miss__strategy': ['mean', 'median', 'most_frequent']}
-]
 #multiclass_roc_auc = functools.partial(roc_auc_score, average=np.average)
 def multiclass_roc_auc_score(y_test, y_pred, average="macro"):
     lb = LabelBinarizer()
@@ -118,14 +114,8 @@ MXE = make_scorer(log_loss)
 
 scorings = [ACC, PRC, FSC, LFT, ROC, APR, RMS, MXE]
 name = ['ACC', 'PRC','FSC', 'LFT', 'ROC', 'APR', 'RMS', 'MXE']
-ad_train = pd.read_csv('data/train/adult.csv')
-nsr_train = pd.read_csv('data/train/nsr.csv')
-avl_train = pd.read_csv('data/train/avl.csv')
-ad_test = pd.read_csv('data/test/adult.csv')
-nsr_test = pd.read_csv('data/test/nsr.csv')
-avl_test = pd.read_csv('data/test/avl.csv')
 
-scores_info = {"ROC": ROC,
+scores_info = {#"ROC": ROC,
                'APR': APR,
                'RMS': RMS,
                'MXE': MXE,
@@ -142,19 +132,29 @@ more_scores = {
 knn_info={'knn':[KNeighborsClassifier(),knn_params]}
 svm_info = {'svm': [SVC(), svm_params]}
 dtree_info={'dtree':[DecisionTreeClassifier(), dtr_params]}
-avl_info={"avl":[avl_train,avl_test]}
-adult_info ={'adult':[ad_train, ad_test]}
-nsr_info ={'nursery':[nsr_train, nsr_test]}
+# Dataset information
+# eg: {'avl': [avl_train, avl_test]}
+avl_info={"avl":random_avl()}
+adult_info = {'adult': random_adult()}
+nsr_info = {'nursery': random_nsr()}
 
-# save_trails(pre_params_, preprocessor_, alg, scr, data)
-#nsr_knn=save_trails(prep, preprocessor, knn_info, scores_info, nsr_info)
-#adult_knn = save_trails(prep, preprocessor, knn_info, scores_info, adult_info)
+'''Traininging......... '''
+
+print('start knn')
+# nsr_knn=save_trails(prep, preprocessor, knn_info, scores_info, nsr_info)
+# adult_knn = save_trails(prep, preprocessor, knn_info, scores_info, adult_info)
+avl_knn = save_trails(prep, preprocessor, knn_info, scores_info, avl_info)
 print('finish knn')
 print('start_svm')
 #nsr_svm=save_trails(prep, preprocessor, svm_info, scores_info, nsr_info)
-#save_trails(prep, preprocessor, svm_info, scores_info, adult_info)
+save_trails(prep, preprocessor, svm_info, scores_info, adult_info)
+#avl_svm = save_trails(prep, preprocessor, svm_info, scores_info, avl_info)
 print('finish svm')
 print('start dtree')
-save_trails(prep, preprocessor, dtree_info, scores_info, adult_info)
+save_trails(prep, preprocessor, dtree_info, scores_info, avl_info)
+#save_trails(prep, preprocessor, dtree_info, scores_info, adult_info)
 #nsr_dtree=save_trails(prep, preprocessor, dtree_info, scores_info, nsr_info)
 print('finished dtree' )
+
+# best : avl-svm avl -dtree avl-knn adult-svm
+# all:  avl-svm avl- dtree  avl-knn adult-svm 

@@ -3,6 +3,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import GridSearchCV
 import joblib
+from sklearn.preprocessing import label_binarize
 
 def check_directory(lst):
     for i in lst:
@@ -22,7 +23,7 @@ def save_trails(pre_params_, preprocessor_, alg, scr, data, path=['all_models/',
     # parameters
     params = pre_params_
     alg_name = list(alg)[0]
-    data_name = list(data).item()
+    data_name = list(data)[0]
     print(data_name)
     clsf = alg[alg_name][0]
     param = alg[alg_name][1]
@@ -34,7 +35,7 @@ def save_trails(pre_params_, preprocessor_, alg, scr, data, path=['all_models/',
     #  ROC AUC requires the predicted class probabilities (yhat_probs)
     X = dataset.drop(columns=['target']) 
     y = dataset.target
-    #y = preprocessing.label_binarize(y, classes=[0, 1, 2, 3, 4])
+    y = label_binarize()(y)
     record={}
     for i in range(len(list(scr))):  
         score_name = list(scr)[i]
@@ -46,7 +47,6 @@ def save_trails(pre_params_, preprocessor_, alg, scr, data, path=['all_models/',
         X_train, X_val, y_train, y_val = train_test_split(
             X, y, test_size=0.5,random_state=13)
         print(y_train.unique())
-
         print(y_val.unique())
         clf = GridSearchCV(pipeline, params, scoring=score,
                            cv=5, n_jobs=-1, return_train_score=True, verbose=True)
