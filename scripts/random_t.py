@@ -49,12 +49,12 @@ def random_adult(n=5000):
 
 
 with open("./scripts/nsrorder.json", "r") as read_file:
-    print("Converting JSON encoded data into Python dictionary")
+    #print("Converting JSON encoded data into Python dictionary")
     developer = json.load(read_file)
-    print("Decoded JSON Data From File")
-    for key, value in developer.items():
-        print(key, ":", value)
-    print("Done reading json file")
+    #print("Decoded JSON Data From File")
+    #for key, value in developer.items():
+        #print(key, ":", value)
+    #print("Done reading json file")
 
 
 def check_item(raw, in_r):

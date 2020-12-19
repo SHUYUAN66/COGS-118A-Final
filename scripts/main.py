@@ -1,6 +1,6 @@
 
 
-import functools
+import json
 import sys
 import numpy as np
 from sklearn.compose import make_column_selector as selector
@@ -129,7 +129,7 @@ scores_info = {"ROC": ROC,
                'FSC': FSC_2,
                'LFT': LFT_2,
                }
-# TODO!
+# TODO
 more_scores = {
                 'MEAN':'bb',
               'OPT-SEL':'aa'}
@@ -143,22 +143,28 @@ avl_info={"avl":random_avl()}
 adult_info = {'adult': random_adult()}
 nsr_info = {'nursery': random_nsr()}
 
-'''Traininging......... '''
+data_sets = [avl_info, adult_info, nsr_info]
+classifiers = [knn_info, svm_info, dtree_info]
 
-print('start knn')
-# nsr_knn=save_trails(prep, preprocessor, knn_info, scores_info, nsr_info)
-# adult_knn = save_trails(prep, preprocessor, knn_info, scores_info, adult_info)
-#avl_knn = save_trails(prep, preprocessor, knn_info, scores_info, avl_info)
-print('finish knn')
-print('start_svm')
-#nsr_svm=save_trails(prep, preprocessor, svm_info, scores_info, nsr_info)
-#save_trails(prep, preprocessor, svm_info, scores_info, adult_info)
-#avl_svm = save_trails(prep, preprocessor, svm_info, scores_info, avl_info)
-print('finish svm')
-print('start dtree')
-save_trails(prep, preprocessor, dtree_info, scores_info, avl_info)
-#save_trails(prep, preprocessor, dtree_info, scores_info, adult_info)
-#nsr_dtree=save_trails(prep, preprocessor, dtree_info, scores_info, nsr_info)
-print('finished dtree' )
-# best : avl-svm avl -dtree avl-knn adult-svm
-# all:  avl-svm avl- dtree  avl-knn adult-svm 
+'''Traininging......... '''
+def train(alfs, datasets):
+    recordings = {}
+    model_path = ['results/models/all_models/', 'results/models/best_models/']
+
+    for i in alfs:
+        print('START ',i)
+        for j in datasets:
+            save_trails(prep, preprocessor,i, scores_info, j, model_path)
+        print('FINISH ', i)
+        print('')
+
+    json = json.dumps(recordings)
+    data_path = "results/train/record.json"
+    check_directory([data_path])
+    f = open(data_path, "w")
+    f.write(json)
+    f.close()
+    print('FINISHED ALLLLLLLLLL')
+    return 
+
+train(classifiers, data_sets)

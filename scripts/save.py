@@ -42,14 +42,13 @@ def save_trails(pre_params_, preprocessor_, alg, scr, data, path=['all_models/',
     #run when multi-classes!
     lb = LabelBinarizer().fit(y)
     y = lb.transform(y)
-    record={}
+    record_scores={}
     for i in range(len(list(scr))):  
         score_name = list(scr)[i]
         score = scr[score_name]
         print(score_name)
-        trail_name = alg_name+data_name+score_name
-        record[trail_name] =[]
-        details = {}
+        record_scores[score_name] ={}
+        score_details = {}
         X_train, X_val, y_train, y_val = train_test_split(
             X, y, test_size=0.2)
         # print(y_train.unique())
@@ -62,22 +61,24 @@ def save_trails(pre_params_, preprocessor_, alg, scr, data, path=['all_models/',
         check_directory([save_models])
         joblib.dump(clf, os.path.join(
             save_models, 'all_models.pkl'))
+        print('All models scored in ' +score_name+ ' saved in ', save_models)
         results = clf.cv_results_
         mean_train_grade = clf.cv_results_['mean_test_score']
-        print('almost there...!')
         best_score = clf.best_score_
         best_params = clf.best_params_
         best_model = clf.best_estimator_
-        details['mean_train_score'] = mean_train_grade
-        details['best_score'] = best_score
-        details['best_params'] = best_params
+        score_details['mean_train_score'] = mean_train_grade
+        score_details['best_score'] = best_score
+        score_details['best_params'] = best_params
+        score_details['results'] = results
         save_best_model = os.path.join(
             path[1], alg_name, data_name, score_name)
         check_directory([save_best_model])
-        details['best_estimator'] = best_model
+        score_details['best_estimator'] = best_model
         joblib.dump(best_model, os.path.join(
             save_best_model, 'best_model.pkl'))
-        record[trail_name].append(details)
+        print('Best model scored in ' +score_name+ 'saved in ', save_best_model)
+        record_scores.update(score_details)
     
-    return record
+    return record_scores
 
