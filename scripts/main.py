@@ -117,9 +117,6 @@ APR_2 = make_scorer(average_precision_score, average='macro')
 RMS = make_scorer(mean_squared_error)
 MXE = make_scorer(log_loss)
 
-scorings = [ACC, PRC, FSC, LFT, ROC, APR, RMS, MXE]
-name = ['ACC', 'PRC','FSC', 'LFT', 'ROC', 'APR', 'RMS', 'MXE']
-
 scores_info = {"ROC": ROC,
                'APR': APR,
                'RMS': RMS,
@@ -139,32 +136,9 @@ svm_info = {'svm': [SVC(), svm_params]}
 dtree_info={'dtree':[DecisionTreeClassifier(), dtr_params]}
 # Dataset information
 # eg: {'avl': [avl_train, avl_test]}
-avl_info={"avl":random_avl()}
+avl_info={"avl": random_avl()}
 adult_info = {'adult': random_adult()}
 nsr_info = {'nursery': random_nsr()}
 
 data_sets = [avl_info, adult_info, nsr_info]
 classifiers = [knn_info, svm_info, dtree_info]
-
-'''Traininging......... '''
-def train(alfs, datasets):
-    recordings = {}
-    model_path = ['results/models/all_models/', 'results/models/best_models/']
-
-    for i in alfs:
-        print('START ',i)
-        for j in datasets:
-            save_trails(prep, preprocessor,i, scores_info, j, model_path)
-        print('FINISH ', i)
-        print('')
-
-    json = json.dumps(recordings)
-    data_path = "results/train/record.json"
-    check_directory([data_path])
-    f = open(data_path, "w")
-    f.write(json)
-    f.close()
-    print('FINISHED ALLLLLLLLLL')
-    return 
-
-train(classifiers, data_sets)

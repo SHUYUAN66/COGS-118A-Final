@@ -17,12 +17,12 @@ def check_directory(lst):
             os.makedirs(i)     
         else:
             return
-def save_trails(pre_params_, preprocessor_, alg, scr, data, path=['all_models/', 'best_models/']):
+def save_trails(pre_params_, preprocessor_, alg, scr, data, path):
     """
     alg: Algorithm, a dict(), each one is a name of that function {'knn':[KNN(),knn_params]}
     scr: scorings, a dict(), each one is a function such as 'acc':ACC 
     data: a dict() of dataset {'dataname':[trainset, testset]}
-    path = ['all_models','best_models'] , to decide first chart or second chart.
+    path = ['~/all_models','~/best_models'] , to decide first chart or second chart.
     """
     
     # parameters
@@ -39,14 +39,18 @@ def save_trails(pre_params_, preprocessor_, alg, scr, data, path=['all_models/',
         ('classifier', clsf)])
     X = dataset.drop(columns=['target']) 
     y = dataset.target
-    #run when multi-classes!
-    lb = LabelBinarizer().fit(y)
-    y = lb.transform(y)
+    # except adult-ROC combo TODO: fix this
+    # use if
+    if len(y.unique()) > 2:
+        #run when multi-classes
+        lb = LabelBinarizer().fit(y)
+        y = lb.transform(y)
+   
     record_scores={}
     for i in range(len(list(scr))):  
         score_name = list(scr)[i]
         score = scr[score_name]
-        print(score_name)
+        print("Dataset is : ", score_name.upper()) 
         record_scores[score_name] ={}
         score_details = {}
         X_train, X_val, y_train, y_val = train_test_split(
