@@ -1,4 +1,5 @@
-from scripts.check_status import check_directory
+
+from packages.check_status import check_directory
 from sklearn.preprocessing import LabelBinarizer
 import joblib
 from sklearn.model_selection import GridSearchCV
@@ -9,21 +10,21 @@ import json
 __doc__
 
 '''Traininging......... '''
+# input your own pipelines!
 class hyper_choice:
 
-    def __init__(self, pre_params_, preprocessor_, datasets, scrs, alfs):
+    def __init__(self, pre_params_, preprocessor_,alfs):
         self._pre_params_ = pre_params_
         self._preprocessor_ = preprocessor_
-        self._datasets = datasets
-        self._scrs = scrs
         self._alfs = alfs
-        self._path = ['results/models/all_models/',
+        self._models_path = ['results/models/all_models/',
                      'results/models/best_models/']
+        self._data_path = "results/train/record.json"
         self._trailnum = 0
 
     
     # specific alg-scr-data combo 
-    def _save_trails(self, alg, scr, data):
+    def _save_trails(self, alg, scr, data, path):
         alg_name = list(alg)[0]
         data_name = list(data)[0]
         print(data_name)
@@ -56,7 +57,6 @@ class hyper_choice:
             clf = GridSearchCV(pipeline, self._pre_params_, scoring=score,
                            cv=5, n_jobs=-1, return_train_score=True, verbose=True)
             clf.fit(X_train, y_train)
-            path = self._path
             save_models = os.path.join(path[0],alg_name, data_name, score_name)
             check_directory([save_models])
             joblib.dump(clf, os.path.join(
@@ -83,21 +83,21 @@ class hyper_choice:
         return record_scores
         
     # loop though
-    def train(self):
+    def train(self, datasets, scrs):
         recordings = {}
-        model_path = self._path
+        model_path = self._model_path
         for i in self._alfs:
             print('START ', list(i)[0].upper())
-            for j in self.datasets:
+            for j in datasets:
                 self._save_trails(
-                    self._pre_params_, self._preprocessor_, i, self._scrs, j, path=model_path)
+                    self._pre_params_, self._preprocessor_, i, scrs, j, path=model_path)
             print('FINISH ', i)
             print('')
 
         json = json.dumps(recordings)
-        data_path = "results/train/record.json"
-        check_directory([data_path])
-        f = open(data_path, "w")
+        
+        check_directory([self._data_path])
+        f = open(self._data_path, "w")
         f.write(json)
         f.close()
         print('FINISHED ALLLLLLLLLL')
