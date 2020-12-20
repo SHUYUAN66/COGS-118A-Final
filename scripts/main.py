@@ -104,6 +104,7 @@ FSC = make_scorer(f1_score, average='macro')
 FSC_2 = make_scorer(f1_score, average='micro')
 LFT = make_scorer(recall_score, average='macro')
 LFT_2 = make_scorer(recall_score, average='micro')
+
 APR = make_scorer(average_precision_score,average='micro')
 APR_2 = make_scorer(average_precision_score, average='macro')
 RMS = make_scorer(mean_squared_error)

@@ -32,14 +32,17 @@ Still in processing...
         - best estimator : 'results/models/best_models/'
     * data/training score path: 'results/train/record.json'
 
-HOW TO USE 
+HOW TO USE [run run.py]
 
 > from fancy__ import hyper_choice 
 
 > clf = hyper_choice()
 
 > clf.train([Train_sets])
- 
+
+**BUGS**
+1. [SMV-AVL-LFT]: ValueError: y should be a 1d array, got an array of shape (3200, 12) instead.warnings.warn("Estimator fit failed. The score on this train-test"]
+
 
 **Limitations NOW :**
 1. only suport 3 classifiers

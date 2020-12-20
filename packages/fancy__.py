@@ -19,14 +19,15 @@ class hyper_choice:
         self._alfs = alfs
         self._scrs = srcs
         self._train_size = n # will work later
-        self._models_path = ['results/models/all_models/',
-                     'results/models/best_models/']
+        self._models_path = ['results/models/all_models/','results/models/best_models/']
         self._data_path = "results/train/record.json"
         self._trailnum = 0
 
     
     # specific alg-scr-data combo 
-    def _save_trails(self, alg, scr, data, path):
+    # sve_trails(classifier, dataset)
+    def _save_trails(self, alg, data):
+        path = self._models_path
         alg_name = list(alg)[0]
         data_name = list(data)[0]
         print(data_name)
@@ -48,10 +49,11 @@ class hyper_choice:
             y = lb.transform(y)
    
         record_scores={}
-        for i in range(len(list(scr))):  
+        scr = self._scrs
+        for i in range(len(list(self._scrs))):  
             score_name = list(scr)[i]
             score = scr[score_name]
-            print("Dataset is : ", score_name.upper()) 
+            print("Evaluation score is : ", score_name.upper()) 
             record_scores[score_name] ={}
             score_details = {}
             X_train, X_val, y_train, y_val = train_test_split(
@@ -79,7 +81,7 @@ class hyper_choice:
             score_details['best_estimator'] = best_model
             joblib.dump(best_model, os.path.join(
                 save_best_model, 'best_model.pkl'))
-            print('Best model scored in ' +score_name+ 'saved in ', save_best_model)
+            print('Best estimator scored in ' +score_name+ ' saved in ', save_best_model)
             record_scores.update(score_details)
 
         return record_scores
@@ -88,16 +90,17 @@ class hyper_choice:
     
     def train(self, datasets):
         recordings = {}
-        model_path = self._model_path
+        #model_path = self._models_path
         for i in self._alfs:
-            print('START ', list(i)[0].upper())
+            print('START ', list(i)[0].upper(), 'Classification')
             for j in datasets:
-                self._save_trails(
-                    self._pre_params_, self._preprocessor_, i, self._scrs, j, path=model_path)
+                # sve_trails(classifier, dataset)
+                self._save_trails(i, j)
+                    # (self, alg, scr, data,path)
+                    #self._pre_params_, self._preprocessor_, i, self._scrs, j, self._models_path)
             print('FINISH ', i)
             print('')
         json = json.dumps(recordings)
-        
         check_directory([self._data_path])
         f = open(self._data_path, "w")
         f.write(json)
