@@ -1,8 +1,10 @@
 ## AUTO GRIDSEARCH-CV!
 
+- Available for both multi-labels and binary-labels datasets classification
+
 Still in processing... 
 
-default settings:
+**default setting:**
 - scorings: 
 - supervised mechine learning models:
     * preprosessors:categorical/ordinal + numerical variables
@@ -32,10 +34,10 @@ default settings:
 
 HOW TO USE 
 
-from fancy__ import hyper_choice
-clf = hyper_choice()
-clf.train([Train_sets])
-train_
+> from fancy__ import hyper_choice
+> clf = hyper_choice()
+> clf.train([Train_sets])
+> 
 
 **Limitations NOW :**
 1. only suport 3 classifiers
@@ -43,16 +45,16 @@ train_
 3. inputed datasets should in 
     *datasets = [random_adult(n=5000), random_nsr(n=5000)]*
     n is your training size
-    TODO: *random_sample(train_size)* still needs to work on to be used for all datasets.
+    TODO: *random_sample(train_size)*      still needs to work on to be used for all datasets.
 
 TODO: expectations: 
 
-from fancy__ import hyper_choice
-hyper_clf = hyper_choice()
-hyper_clf.fit([YOUR_DATASETS])
+> from fancy__ import hyper_choice
+> hyper_clf = hyper_choice()
+> hyper_clf.fit([YOUR_DATASETS])
 // automatically train- test -validation your datasets
 
-model  = hyper_clf._best_estimator
+> model  = hyper_clf._best_estimator
 
 
 
