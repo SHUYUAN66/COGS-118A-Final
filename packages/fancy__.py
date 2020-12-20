@@ -1,4 +1,6 @@
+import warnings
 
+import numpy as np
 from packages.check_status import check_directory
 from sklearn.preprocessing import LabelBinarizer
 import joblib
@@ -7,14 +9,16 @@ from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 import os
 import json
-__doc__
+
 
 '''Traininging......... '''
 # input your own pipelines!
 class hyper_choice:
 
     def __init__(self, pre_params_, preprocessor_,alfs,srcs ,n):
+        # parameters
         self._pre_params_ = pre_params_
+        # preprocessing pipeline
         self._preprocessor_ = preprocessor_
         self._alfs = alfs
         self._scrs = srcs
@@ -23,14 +27,15 @@ class hyper_choice:
         self._data_path = "results/train/record.json"
         self._trailnum = 0
 
-    
+        
+
     # specific alg-scr-data combo 
     # sve_trails(classifier, dataset)
     def _save_trails(self, alg, data):
         path = self._models_path
         alg_name = list(alg)[0]
         data_name = list(data)[0]
-        print(data_name)
+        print("Target dataset is ", (data_name).upper())
         clsf = alg[alg_name][0]
         param = alg[alg_name][1]
         params = self._pre_params_
@@ -41,26 +46,25 @@ class hyper_choice:
             ('classifier', clsf)])
         X = dataset.drop(columns=['target']) 
         y = dataset.target
-        # except adult-ROC combo TODO: fix this
-        # use if
-        if len(y.unique()) > 2:
-            #run when multi-classes
+        if len(y.unique()) > 2: 
             lb = LabelBinarizer().fit(y)
             y = lb.transform(y)
-   
         record_scores={}
-        scr = self._scrs
-        for i in range(len(list(self._scrs))):  
-            score_name = list(scr)[i]
-            score = scr[score_name]
+        scrs = self._scrs
+        for i in range(len(list(scrs))):  
+            score_name = list(scrs)[i]
+            score = scrs[score_name]
             print("Evaluation score is : ", score_name.upper()) 
             record_scores[score_name] ={}
             score_details = {}
             X_train, X_val, y_train, y_val = train_test_split(
                 X, y, test_size=0.2)
+            print(params)
+            #warnings.warn('ignore', message='ONOOOOO ERROR')
             clf = GridSearchCV(pipeline, params, scoring=score,
-                           cv=5, n_jobs=-1, return_train_score=True, verbose=True)
+                               cv=5, n_jobs=-1, refit=True, return_train_score=True, verbose=True)
             clf.fit(X_train, y_train)
+            print(y_train)
             save_models = os.path.join(path[0],alg_name, data_name, score_name)
             check_directory([save_models])
             joblib.dump(clf, os.path.join(
@@ -100,7 +104,7 @@ class hyper_choice:
                     #self._pre_params_, self._preprocessor_, i, self._scrs, j, self._models_path)
             print('FINISH ', i)
             print('')
-        json = json.dumps(recordings)
+        json.dumps(recordings)
         check_directory([self._data_path])
         f = open(self._data_path, "w")
         f.write(json)
@@ -113,7 +117,8 @@ class hyper_choice:
     # get algorithm:
         return
     
-
+    
+        
     
 
     

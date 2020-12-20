@@ -88,20 +88,22 @@ def clean_nsr(df):
 def random_nsr(n=5000):   
     nsr_raw = pd.read_csv('./data/raw/nursey/nursery.data', header=None)
     cleaning_nsr = clean_nsr(nsr_raw)
-    cleaning_nsr['target'] = cleaning_nsr['target'].replace(
-        ['notrecom', 'recommend', 'veryrecom', 'priority', 'specprior'], [0, 1, 2, 3, 4])
+    #cleaning_nsr['target'] = cleaning_nsr['target'].replace(
+        #['notrecom', 'recommend', 'veryrecom', 'priority', 'specprior'])
     nsr_train = cleaning_nsr.sample(n=n, replace=False)
     nsr_test = cleaning_nsr.drop(nsr_train.index)
     nsr_train.to_csv('./data/train/nsr.csv', index=False)
     nsr_test .to_csv('./data/test/nsr.csv', index=False)
+    print(nsr_train.target.unique())
     nsr_train = pd.read_csv('./data/train/nsr.csv')
-    nsr_resr = pd.read_csv('./data/train/nsr.csv')
+    nsr_test = pd.read_csv('./data/test/nsr.csv')
     return [nsr_train, nsr_test]
 
 def random_avl(n=5000):
     avl = pd.read_csv('./data/raw/avl_set/avila-tr.txt', header=None)
     avl.columns = avl.columns.astype(str)
     avl = avl.rename(columns={'10': 'target'})
+    #print(avl.target.unique())
     avl_train = avl.sample(n=n, replace=False)
     avl_test = avl.drop(avl_train.index)
     avl_train.to_csv('./data/train/avl.csv', index=False)

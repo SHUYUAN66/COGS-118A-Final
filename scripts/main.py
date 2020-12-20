@@ -1,15 +1,19 @@
-
-from scripts.random_t import random_adult, random_avl, random_nsr
 import numpy as np
 from sklearn.compose import make_column_selector as selector
+from sklearn.multiclass import OneVsRestClassifier
 from sklearn.preprocessing import LabelBinarizer, StandardScaler,  OneHotEncoder, OrdinalEncoder
 from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.svm import SVC
+from sklearn.svm import LinearSVC, SVC
 from sklearn.pipeline import Pipeline
 from sklearn.neighbors import KNeighborsClassifier
-
+import sys
+sys.path.insert(0, '/scripts')
+try:
+    from scripts.random_t import *
+except Exception:
+    from random_t import *
 
 # Basic
 from sklearn.metrics import  make_scorer, f1_score, accuracy_score, mean_squared_error, average_precision_score, roc_auc_score, log_loss, recall_score,precision_score
@@ -69,7 +73,7 @@ preprocessor = ColumnTransformer(transformers=[('categoricals', categorical_tran
                                                ('numericals', numeric_transformer, selector(
                                                    dtype_include=["int",'float']))
                                                ])
-preprocessor_ordinal = ColumnTransformer(transformers=[('categoricals', ordinal_transformer,
+preprocessor_ordinal = ColumnTransformer(transformers=[('ordinal', ordinal_transformer,
                                                         selector(dtype_exclude=["int"])),
                                                ('numericals', numeric_transformer, selector(
                                                    dtype_include=["int", 'float']))
@@ -81,8 +85,8 @@ prep = [
      'preprocessing__numericals__miss__strategy': ['mean', 'median', 'most_frequent']}
 ]
 prep_ord = [
-    {'preprocessing__categoricals': [ordinal_transformer],
-     'preprocessing__categoricals__miss__strategy': ['most_frequent']},
+    {'preprocessing__ordinal': [ordinal_transformer],
+     'preprocessing__ordinal__miss__strategy': ['most_frequent']},
     {'preprocessing__numericals': [numeric_transformer],
      'preprocessing__numericals__miss__strategy': ['mean', 'median', 'most_frequent']}
 ]
@@ -102,8 +106,8 @@ PRC = make_scorer(precision_score, average ='micro' )
 PRC_2 = make_scorer(precision_score, average='macro')
 FSC = make_scorer(f1_score, average='macro')
 FSC_2 = make_scorer(f1_score, average='micro')
-LFT = make_scorer(recall_score, average='macro')
-LFT_2 = make_scorer(recall_score, average='micro')
+LFT = make_scorer(recall_score, average='macro', zero_division=1)
+LFT_2 = make_scorer(recall_score, average='micro', zero_division =1)
 
 APR = make_scorer(average_precision_score,average='micro')
 APR_2 = make_scorer(average_precision_score, average='macro')
@@ -135,3 +139,4 @@ nsr_info = {'nursery': random_nsr()}
 
 data_sets = [avl_info, adult_info, nsr_info]
 classifiers = [knn_info, svm_info, dtree_info]
+
