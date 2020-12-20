@@ -1,7 +1,8 @@
 import numpy as np
 from sklearn.compose import make_column_selector as selector
+from sklearn.manifold import Isomap
 from sklearn.multiclass import OneVsRestClassifier
-from sklearn.preprocessing import LabelBinarizer, StandardScaler,  OneHotEncoder, OrdinalEncoder
+from sklearn.preprocessing import LabelBinarizer, LabelEncoder, StandardScaler,  OneHotEncoder, OrdinalEncoder, label_binarize
 from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
 from sklearn.tree import DecisionTreeClassifier
@@ -44,6 +45,7 @@ knn_params = {'classifier': [KNeighborsClassifier()],
               'classifier__algorithm': ['brute']}
 #'classifier__leaf_size_int': np.random.randint(0, 50, 10)}
 svm_params = {'classifier': [SVC()],
+              'classifier__decision_function_shape': ['ovr'],
               'classifier__C': C,
               'classifier__gamma': gamma,
               'classifier__kernel': ['rbf', 'poly'],
@@ -62,22 +64,33 @@ categorical_transformer = Pipeline(
            ])
 ordinal_transformer = Pipeline(
     steps=[('miss', SimpleImputer(strategy='constant', fill_value='missing')),
-           ('encode', OrdinalEncoder())
+           ('encode', OrdinalEncoder()),
+           ])
+
+label_transformer = Pipeline(
+    steps=[('miss', SimpleImputer(strategy='constant', fill_value='missing')),
+           ('encode', LabelEncoder()),
            ])
 numeric_transformer = Pipeline(
     steps=[('miss', SimpleImputer()),  ('scaler', StandardScaler())
            ])
+label_transformer = Pipeline(
+    steps=[  ('encode', LabelBinarizer())
+           ])
 # combine
 preprocessor = ColumnTransformer(transformers=[('categoricals', categorical_transformer,
-                                                selector(dtype_include=["object","category"])),
+                                                selector(dtype_exclude=["int",'float'])),
                                                ('numericals', numeric_transformer, selector(
                                                    dtype_include=["int",'float']))
                                                ])
-preprocessor_ordinal = ColumnTransformer(transformers=[('ordinal', ordinal_transformer,
-                                                        selector(dtype_exclude=["int"])),
+preprocessor_ordinal = ColumnTransformer(transformers=[('categoricals', ordinal_transformer,
+                                                        selector(dtype_exclude=["int", 'float'])),
                                                ('numericals', numeric_transformer, selector(
                                                    dtype_include=["int", 'float']))
                                                ])
+preprocessor_label = ColumnTransformer(transformers=[('categoricals', label_transformer
+                                                        )
+                                                       ])
 prep = [
     {'preprocessing__categoricals': [categorical_transformer],
      'preprocessing__categoricals__miss__strategy': ['most_frequent']},
@@ -85,10 +98,13 @@ prep = [
      'preprocessing__numericals__miss__strategy': ['mean', 'median', 'most_frequent']}
 ]
 prep_ord = [
-    {'preprocessing__ordinal': [ordinal_transformer],
-     'preprocessing__ordinal__miss__strategy': ['most_frequent']},
+    {'preprocessing__categoricals': [ordinal_transformer],
+     'preprocessing__categoricals__miss__strategy': ['most_frequent']},
     {'preprocessing__numericals': [numeric_transformer],
      'preprocessing__numericals__miss__strategy': ['mean', 'median', 'most_frequent']}
+]
+prep_label = [
+    
 ]
 #multiclass_roc_auc = functools.partial(roc_auc_score, average=np.average)
 
@@ -102,15 +118,15 @@ def multiclass_roc_auc_score(y_test, y_pred, average='micro'):
 
 ROC = make_scorer(multiclass_roc_auc_score)
 ACC = make_scorer(accuracy_score)
-PRC = make_scorer(precision_score, average ='micro' )
-PRC_2 = make_scorer(precision_score, average='macro')
-FSC = make_scorer(f1_score, average='macro')
-FSC_2 = make_scorer(f1_score, average='micro')
+PRC = make_scorer(precision_score, average='macro', zero_division=1)
+PRC_2 = make_scorer(precision_score, average='micro', zero_division=1)
+FSC = make_scorer(f1_score, average='macro' , zero_division=1)
+FSC_2 = make_scorer(f1_score, average='micro', zero_division =1)
 LFT = make_scorer(recall_score, average='macro', zero_division=1)
 LFT_2 = make_scorer(recall_score, average='micro', zero_division =1)
 
-APR = make_scorer(average_precision_score,average='micro')
-APR_2 = make_scorer(average_precision_score, average='macro')
+APR = make_scorer(average_precision_score,average='micro',zero_division=1)
+APR_2 = make_scorer(average_precision_score, average='macro', zero_division=1)
 RMS = make_scorer(mean_squared_error)
 MXE = make_scorer(log_loss)
 

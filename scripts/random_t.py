@@ -72,8 +72,9 @@ def clean_nsr(df):
                'housing', 'finance', 'social', 'health', 'target']
     df.columns = nsr_var
     raw = df.copy()
-    raw = raw.replace({'inconv': 0, 'convenient': 1})
+    #raw = raw.replace({'inconv': 0, 'convenient': 1})
     df = df.replace('_', '', regex=True)
+    #df = df.replace(' ', '', regex=True)
     df = df.drop(columns=['finance'])
     for i in df.columns:
         df[i] = df[i].astype('category')
@@ -89,12 +90,12 @@ def random_nsr(n=5000):
     nsr_raw = pd.read_csv('./data/raw/nursey/nursery.data', header=None)
     cleaning_nsr = clean_nsr(nsr_raw)
     #cleaning_nsr['target'] = cleaning_nsr['target'].replace(
-        #['notrecom', 'recommend', 'veryrecom', 'priority', 'specprior'])
+        #['notrecom', 'recommend', 'veryrecom', 'priority', 'specprior'],[0,1,2,3,4])
     nsr_train = cleaning_nsr.sample(n=n, replace=False)
     nsr_test = cleaning_nsr.drop(nsr_train.index)
     nsr_train.to_csv('./data/train/nsr.csv', index=False)
     nsr_test .to_csv('./data/test/nsr.csv', index=False)
-    print(nsr_train.target.unique())
+    #print(nsr_train.target.unique())
     nsr_train = pd.read_csv('./data/train/nsr.csv')
     nsr_test = pd.read_csv('./data/test/nsr.csv')
     return [nsr_train, nsr_test]

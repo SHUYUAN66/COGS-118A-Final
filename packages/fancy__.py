@@ -1,10 +1,11 @@
 import warnings
 
 import numpy as np
+from sklearn.manifold import Isomap
 from packages.check_status import check_directory
 from sklearn.preprocessing import LabelBinarizer
 import joblib
-from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import GridSearchCV, RepeatedStratifiedKFold
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 import os
@@ -40,15 +41,16 @@ class hyper_choice:
         param = alg[alg_name][1]
         params = self._pre_params_
         params.append(param)
+        # train
         dataset = data[data_name][0]
         pipeline = Pipeline([
             ('preprocessing', self._preprocessor_),
             ('classifier', clsf)])
         X = dataset.drop(columns=['target']) 
         y = dataset.target
-        if len(y.unique()) > 2: 
-            lb = LabelBinarizer().fit(y)
-            y = lb.transform(y)
+        #if len(y.unique()) > 2: 
+            #lb = LabelBinarizer().fit(y)
+            #y = lb.transform(y)
         record_scores={}
         scrs = self._scrs
         for i in range(len(list(scrs))):  
@@ -59,13 +61,15 @@ class hyper_choice:
             score_details = {}
             X_train, X_val, y_train, y_val = train_test_split(
                 X, y, test_size=0.2)
-            print(params)
-            #warnings.warn('ignore', message='ONOOOOO ERROR')
+            #print(params)
+            
+            warnings.warn('ignore')
             clf = GridSearchCV(pipeline, params, scoring=score,
-                               cv=5, n_jobs=-1, refit=True, return_train_score=True, verbose=True)
+                               cv=5, n_jobs=-1, return_train_score=True, verbose=True)
             clf.fit(X_train, y_train)
-            print(y_train)
+            #print(y_train)
             save_models = os.path.join(path[0],alg_name, data_name, score_name)
+            print(save_models)
             check_directory([save_models])
             joblib.dump(clf, os.path.join(
                 save_models, 'all_models.pkl'))
@@ -100,8 +104,6 @@ class hyper_choice:
             for j in datasets:
                 # sve_trails(classifier, dataset)
                 self._save_trails(i, j)
-                    # (self, alg, scr, data,path)
-                    #self._pre_params_, self._preprocessor_, i, self._scrs, j, self._models_path)
             print('FINISH ', i)
             print('')
         json.dumps(recordings)

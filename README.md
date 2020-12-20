@@ -41,11 +41,15 @@ HOW TO USE [run run.py]
 > clf.train([Train_sets])
 
 **BUGS**
-1. " ValueError: y should be a 1d array, got an array of shape (3200, 12) instead.warnings.warn("Estimator fit failed. The score on this train-test") "
-    1. [SMV-AVL-LFT]: 
-    2. []svm/nursery/APR
-    3. []svm/nursery/RMS
-    4. 
+
+2. []svm/nursery/APR 
+        svm("ocr") could use other scores exclude apr in clf
+        ?? why
+        can be fitted using PRC but APR cant
+        ...
+        still not solving... What DID I DO TO SVM!!!!
+3. []svm/nursery/RMS
+4. 
 
 **Limitations NOW :**
 1. only suport 3 classifiers
