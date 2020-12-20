@@ -1,5 +1,6 @@
 # TODO: establish chart for score- classifier comparisons
 import os
+import numpy as np
 import os.path
 import pandas as pd
 from sklearn.metrics import make_scorer, f1_score, accuracy_score, mean_squared_error, average_precision_score, roc_auc_score, log_loss, recall_score, precision_score
@@ -72,18 +73,7 @@ def select_trails(alg, scr, data, path=['all_models', 'best_models']):
     os.path.join ()
     
 
-    for i in alg:
-        score_name = scr.get_key()
-        data_name = data.get_key()
-        df['algorithm'] = df
-        df['scoring'] = scr_name
-        df['dataset'] = data_name
-        model = os.path.join(path, alg, scr_name, data_name)
-        models.append(model)
-        pred_y = model.predict(X_test)
-        get = scr(y_test, pred_y)
-        df['performance']=get
-    return df
+    
 
     
     

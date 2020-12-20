@@ -1,23 +1,15 @@
 
-
-import json
-import sys
+from scripts.random_t import random_adult, random_avl, random_nsr
 import numpy as np
 from sklearn.compose import make_column_selector as selector
 from sklearn.preprocessing import LabelBinarizer, StandardScaler,  OneHotEncoder, OrdinalEncoder
-import seaborn as sns
-import pandas as pd
 from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.svm import SVC
 from sklearn.pipeline import Pipeline
 from sklearn.neighbors import KNeighborsClassifier
-sys.path.insert(0, '/scripts')
-# Model
-from save import *
-# for randomly choosing datasets with different sizes (default n=5000)
-from random_t import *
+
 
 # Basic
 from sklearn.metrics import  make_scorer, f1_score, accuracy_score, mean_squared_error, average_precision_score, roc_auc_score, log_loss, recall_score,precision_score

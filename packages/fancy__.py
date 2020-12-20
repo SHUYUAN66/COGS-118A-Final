@@ -13,10 +13,12 @@ __doc__
 # input your own pipelines!
 class hyper_choice:
 
-    def __init__(self, pre_params_, preprocessor_,alfs):
+    def __init__(self, pre_params_, preprocessor_,alfs,srcs ,n):
         self._pre_params_ = pre_params_
         self._preprocessor_ = preprocessor_
         self._alfs = alfs
+        self._scrs = srcs
+        self._train_size = n # will work later
         self._models_path = ['results/models/all_models/',
                      'results/models/best_models/']
         self._data_path = "results/train/record.json"
@@ -34,7 +36,7 @@ class hyper_choice:
         params.append(param)
         dataset = data[data_name][0]
         pipeline = Pipeline([
-            ('preprocessing', params),
+            ('preprocessing', self._preprocessor_),
             ('classifier', clsf)])
         X = dataset.drop(columns=['target']) 
         y = dataset.target
@@ -54,7 +56,7 @@ class hyper_choice:
             score_details = {}
             X_train, X_val, y_train, y_val = train_test_split(
                 X, y, test_size=0.2)
-            clf = GridSearchCV(pipeline, self._pre_params_, scoring=score,
+            clf = GridSearchCV(pipeline, params, scoring=score,
                            cv=5, n_jobs=-1, return_train_score=True, verbose=True)
             clf.fit(X_train, y_train)
             save_models = os.path.join(path[0],alg_name, data_name, score_name)
@@ -83,17 +85,17 @@ class hyper_choice:
         return record_scores
         
     # loop though
-    def train(self, datasets, scrs):
+    
+    def train(self, datasets):
         recordings = {}
         model_path = self._model_path
         for i in self._alfs:
             print('START ', list(i)[0].upper())
             for j in datasets:
                 self._save_trails(
-                    self._pre_params_, self._preprocessor_, i, scrs, j, path=model_path)
+                    self._pre_params_, self._preprocessor_, i, self._scrs, j, path=model_path)
             print('FINISH ', i)
             print('')
-
         json = json.dumps(recordings)
         
         check_directory([self._data_path])
@@ -104,7 +106,7 @@ class hyper_choice:
         return
 
 
-    def test(alfs, datasets):
+    def test(alfs, datasets,scrs):
     # get algorithm:
         return
     
