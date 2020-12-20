@@ -34,10 +34,12 @@ Still in processing...
 
 HOW TO USE 
 
-> from fancy__ import hyper_choice
+> from fancy__ import hyper_choice 
+
 > clf = hyper_choice()
+
 > clf.train([Train_sets])
-> 
+ 
 
 **Limitations NOW :**
 1. only suport 3 classifiers
@@ -50,8 +52,11 @@ HOW TO USE
 TODO: expectations: 
 
 > from fancy__ import hyper_choice
+
 > hyper_clf = hyper_choice()
+
 > hyper_clf.fit([YOUR_DATASETS])
+
 // automatically train- test -validation your datasets
 
 > model  = hyper_clf._best_estimator
