@@ -1,11 +1,10 @@
 import warnings
 
 import numpy as np
-from sklearn.manifold import Isomap
 from packages.check_status import check_directory
 from sklearn.preprocessing import LabelBinarizer
 import joblib
-from sklearn.model_selection import GridSearchCV, RepeatedStratifiedKFold
+from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 import os

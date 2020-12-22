@@ -1,74 +1,89 @@
-# TODO: establish chart for score- classifier comparisons
-import os
-import numpy as np
-import os.path
-import pandas as pd
-from sklearn.metrics import make_scorer, f1_score, accuracy_score, mean_squared_error, average_precision_score, roc_auc_score, log_loss, recall_score, precision_score
-import joblib
+import seaborn as sns
+import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
-record = {}
-# measure model performance on the test set (all the data in thedataset other than the 5000 random samples
-# for each dataset, generate all scores of "score"
-# need to record as test_scores = {adult:{svc:[], knn:[],dtree:[]}, nursery: {svc:[], knn:[],dtree:[]}, power: {svc:[], knn:[],dtree:[]}
-scores_test_alg = {}
-# mean​ training​ set performance for the optimal hyperparameters
-# a good hyper, then use these params to train and got scores
-# this would be only using hyperparams model:
-# record as model:{'adult:{best = pipeline,test = [], train = []}, nursery:{test = [], train = []}...}
-scores_train_data = {}
-# a discussion of thedifference between each algorithms’ training and test set performance
-# continue on usinf the same good params, see the test scores
-scores_test_data = {}
-ad_train = pd.read_csv('data/train/adult.csv')
-nsr_train = pd.read_csv('data/train/nsr.csv')
-avl_train = pd.read_csv('data/train/avl.csv')
+from sklearn.linear_model import LogisticRegression
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import SVC
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.naive_bayes import GaussianNB
+from xgboost import XGBClassifier
+from sklearn import model_selection
+from sklearn.utils import class_weight
+from sklearn.metrics import classification_report
+from sklearn.metrics import confusion_matrix
+import numpy as np
+import pandas as pd
+
+from sklearn.datasets import load_breast_cancer
+X, y = data = load_breast_cancer(return_X_y=True)
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.25)
+
+def run_exps(X_train: pd.DataFrame, y_train: pd.DataFrame, X_test: pd.DataFrame, y_test: pd.DataFrame) -> pd.DataFrame:
+    '''
+    Lightweight script to test many models and find winners
+    :param X_train: training split
+    :param y_train: training target vector
+    :param X_test: test split
+    :param y_test: test target vector
+    :return: DataFrame of predictions
+    '''
+    dfs = []
 
 
-"""
-for every algorithms (knn/svm/dtree)
-there are there three datasets and many scores evaluating them.
-find all the test score of such dataset predicted from algorithm based on scorring,
-mean[ad-svm-acc,nsr_svm_acc, avl_svm_acc] (1,1) 
-mean[ad-knn-acc,nsr_svm_acc,avl_nsr_acc] (2,1)
-mean[ad-dtree-acc,nsr_dtree_acc,avl_dtree_acc](2,1)
-"""
-
-ACC = make_scorer(accuracy_score)
-PRC = make_scorer(precision_score)
-FSC = make_scorer(f1_score)
-LFT = make_scorer(recall_score)
-ROC = make_scorer(roc_auc_score)
-APR = make_scorer(average_precision_score)
-RMS = make_scorer(mean_squared_error)
-MXE = make_scorer(log_loss)
-# score 
-scorings = [ACC, PRC, FSC, LFT, ROC, APR, RMS, MXE]
-name = ['ACC', 'FSC', 'LFT', 'ROC', 'APR', 'BEP', 'RMS', 'MXE']
-# score name score.get_key() 
-score_dict={}
-for i in range(len(name)):
-    score_dict[name[i]] = scorings[i]
-# algorithm
-
-
-def select_trails(alg, scr, data, path=['all_models', 'best_models']):
-    """
-    alg: Algorithm, a list of names}
-    scr: scorings, a dict(), each one is a function such as 'acc':ACC 
-    data: a dict() of dataset 
-    path = ['all_models','best_models'] , to decide first chart or second chart.
-    """
-    data_name = list(data)[0]
-    dataset = data[data_name][0]
-    X_test = dataset.drop(columns=['target'])
-    y_test = dataset.target
-    
-    
-    
-
-    
-
-    
-    
+    models = [
+    ('LogReg', LogisticRegression()),
+    ('RF', RandomForestClassifier()),
+    ('KNN', KNeighborsClassifier()),
+    ('SVM', SVC()),
+    ('GNB', GaussianNB()),
+    ('XGB', XGBClassifier())
+    ]
+    results = []    
+    names = []
+    scoring = ['accuracy', 'precision_weighted',
+           'recall_weighted', 'f1_weighted', 'roc_auc']
+    target_names = ['malignant', 'benign']
+    for name, model in models:
+        kfold = model_selection.KFold(n_splits=5, shuffle=True, random_state=90210)
+        cv_results = model_selection.cross_validate(
+        model, X_train, y_train, cv=kfold, scoring=scoring)
+        clf = model.fit(X_train, y_train)
+        y_pred = clf.predict(X_test)
+        print(name)
+        print(classification_report(y_test, y_pred, target_names=target_names))
+        results.append(cv_results)
+        names.append(name)
+        this_df = pd.DataFrame(cv_results)
+        this_df['model'] = name
+        dfs.append(this_df)
+    final = pd.concat(dfs, ignore_index=True)
+    return final
 
 
+final = run_exps(X_train, y_train, X_test, y_test)
+bootstraps = []
+for model in list(set(final.model.values)):
+    model_df = final.loc[final.model == model]
+    bootstrap = model_df.sample(n=30, replace=True)
+    bootstraps.append(bootstrap)
+
+bootstrap_df = pd.concat(bootstraps, ignore_index=True)
+results_long = pd.melt(bootstrap_df, id_vars=[
+                       'model'], var_name='metrics', value_name='values')
+time_metrics = ['fit_time', 'score_time']  # fit time metrics
+## PERFORMANCE METRICS
+results_long_nofit = results_long.loc[~results_long['metrics'].isin(
+    time_metrics)]  # get df without fit data
+results_long_nofit = results_long_nofit.sort_values(by='values')
+## TIME METRICS
+results_long_fit = results_long.loc[results_long['metrics'].isin(
+    time_metrics)]  # df with fit data
+results_long_fit = results_long_fit.sort_values(by='values')
+plt.figure(figsize=(20, 12))
+sns.set(font_scale=2.5)
+g = sns.boxplot(x="model", y="values", hue="metrics",
+                data=results_long_nofit, palette="Set3")
+plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
+plt.title('Comparison of Model by Classification Metric')
+plt.savefig('./benchmark_models_performance.png', dpi=300)
