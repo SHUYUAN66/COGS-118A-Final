@@ -62,15 +62,8 @@ def select_trails(alg, scr, data, path=['all_models', 'best_models']):
     dataset = data[data_name][0]
     X_test = dataset.drop(columns=['target'])
     y_test = dataset.target
-    # first table: only use one setting of hyperparameters! no need to do gredsearch
-    # one alg(knn)-3 dataset
-    # knn (ACC, APR, .....)
-    # - ad
-    # - nsr
-    # - avl
-    # svm
-    # ...
-    os.path.join ()
+    
+    
     
 
     

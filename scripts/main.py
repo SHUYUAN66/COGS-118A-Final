@@ -15,6 +15,7 @@ try:
     from scripts.random_t import *
 except Exception:
     from random_t import *
+from save import *
 
 # Basic
 from sklearn.metrics import  make_scorer, f1_score, accuracy_score, mean_squared_error, average_precision_score, roc_auc_score, log_loss, recall_score,precision_score
@@ -156,3 +157,4 @@ nsr_info = {'nursery': random_nsr()}
 data_sets = [avl_info, adult_info, nsr_info]
 classifiers = [knn_info, svm_info, dtree_info]
 
+save_trails(prep, preprocessor, svm_info, scores_info, adult_info, path = ['debugging/model_all','debugging/best'])

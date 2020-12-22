@@ -3,6 +3,7 @@
 - Available for both multi-labels and binary-labels datasets classification
 
 Still in processing... 
+new idea: ovr/ovo transformer functions. 
 
 **default setting:**
 - scorings: 
@@ -48,7 +49,10 @@ HOW TO USE [run run.py]
         can be fitted using PRC but APR cant
         ...
         still not solving... What DID I DO TO SVM!!!!
+        
+
 3. []svm/nursery/RMS
+        this one either
 4. 
 
 **Limitations NOW :**

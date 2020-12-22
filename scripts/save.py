@@ -39,18 +39,17 @@ def save_trails(pre_params_, preprocessor_, alg, scr, data, path):
         ('classifier', clsf)])
     X = dataset.drop(columns=['target']) 
     y = dataset.target
-    # except adult-ROC combo TODO: fix this
-    # use if
+    print(y.unique())
     if len(y.unique()) > 2:
-        #run when multi-classes
+        # this will transform y into 1,0 ndarray
         lb = LabelBinarizer().fit(y)
         y = lb.transform(y)
-   
+       
     record_scores={}
     for i in range(len(list(scr))):  
         score_name = list(scr)[i]
         score = scr[score_name]
-        print("Dataset is : ", score_name.upper()) 
+        print("Dataset is : ", data_name.upper()) 
         record_scores[score_name] ={}
         score_details = {}
         X_train, X_val, y_train, y_val = train_test_split(

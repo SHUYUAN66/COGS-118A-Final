@@ -29,7 +29,7 @@ if __name__ == '__main__':
     
     # pre_params_, preprocessor_,alfs,srcs ,n
     # dict_keys(['add_indicator', 'copy', 'fill_value', 'missing_values', 'strategy', 'verbose']) dict_keys(['categories', 'drop', 'dtype', 'handle_unknown', 'sparse'])
-    clf = hyper_choice(prep,preprocessor,classifiers, scores_info, 3000)
+    clf = hyper_choice(prep_ord,preprocessor_ordinal,classifiers, scores_info, 3000)
     # alg_name, data_name, score_name
     clf.train(data_sets)
 
