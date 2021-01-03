@@ -1,3 +1,5 @@
+
+
 import numpy as np
 from sklearn.manifold import Isomap
 from sklearn.multiclass import OneVsRestClassifier
@@ -10,14 +12,14 @@ from sklearn.pipeline import Pipeline
 from sklearn.neighbors import KNeighborsClassifier
 import sys
 from sklearn.metrics import make_scorer, f1_score, accuracy_score, mean_squared_error, average_precision_score, log_loss, recall_score, precision_score
-from preprocessing import *
-from onevone import *
+
 sys.path.insert(0, '/scripts')
 try:
     from scripts.random_t import *
+
 except Exception:
     from random_t import *
-
+from onevone import Onevone  
 
 # Basic
 
@@ -59,7 +61,7 @@ dtr_params = {'classifier': [DecisionTreeClassifier()],
               'classifier__max_depth': [ 4, 6, 8, 10]
               }
 
-
+multiclass_roc_auc_score = Onevone.multiclass_roc_auc_score
 ROC = make_scorer(multiclass_roc_auc_score)
 ACC = make_scorer(accuracy_score)
 PRC = make_scorer(precision_score, average='macro', zero_division=1)
@@ -98,6 +100,5 @@ nsr_info = {'nursery': random_nsr()}
 
 data_sets = [avl_info, adult_info, nsr_info]
 classifiers = [knn_info, svm_info, dtree_info]
-
-onevone(OneHotEncoder(), svm_info, scores_info, adult_info,
-            path=['debugging/model_all', 'debugging/best'])
+# save_trails(self,encoder, alg, scr, data, path):
+Onevone.save_trails(OneHotEncoder(), svm_info, scores_info, data=adult_info,path=['debugging/model_all', 'debugging/best'])
